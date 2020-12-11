@@ -58,6 +58,7 @@ public class SigninUtil {
                 .setPlanId(singin.getPlanId())
                 .setReportType(AutoManageType.AUTO__WRITE_DAY)
                 .setTitle(AutoManageType.AUTO_TITLE);
+
         NetworkApi.request(JsonUtils.serialize(info), autoWriteUrl, token,
                 json1 -> System.out.println(" 自动日报写入 : "  + json1));
     }

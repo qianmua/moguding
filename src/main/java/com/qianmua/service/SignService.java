@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -85,9 +86,11 @@ public class SignService {
                 return;
 
             token = parse.getData().getToken();
+            System.out.println("token -> " + token);
             //获取任务id
-            getPlan(plan, dateFormat, token);
+            this.getPlan(plan, dateFormat, token);
         });
+        System.out.println(Arrays.toString(plan));
         Thread.sleep(5000);
         return plan[0];
     }
@@ -97,7 +100,7 @@ public class SignService {
      * get
      * @param token
      */
-    private void getPlan(String[] plan, SimpleDateFormat dateFormat, String token) {
+    private String[] getPlan(String[] plan, SimpleDateFormat dateFormat, String token) {
         String planurl = uri + "/practice/plan/v1/getPlanByStu";
         NetworkApi.request("{\"state\":\"\"}", planurl, token, json1 -> {
             System.out.println(dateFormat.format(new Date()) + "  获取任务列表：" + json1);
@@ -106,6 +109,8 @@ public class SignService {
             plan[0] = planId;
             System.out.println("planId = " + planId);
         });
+
+        return plan;
     }
 
 
