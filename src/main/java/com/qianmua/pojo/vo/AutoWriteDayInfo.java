@@ -3,6 +3,7 @@ package com.qianmua.pojo.vo;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -58,4 +59,9 @@ public class AutoWriteDayInfo {
     // month
     private String reportType;
     private String title;
+
+//    private LocalDateTime endTime;
+//    private LocalDateTime startTime;
+//    private String weeks;
+
 }

@@ -48,11 +48,7 @@ public class AutoOption {
             SigninUtil signinUtil = new SigninUtil();
 
             // auto write
-
-
-
-
-            signService.autoWrite(plan);
+//            signService.autoWrite(plan);
         } );
 
         return "SUCCESS";
