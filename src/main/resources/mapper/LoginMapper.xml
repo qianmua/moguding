@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qianmua.dao.LoginMapper">
+    <resultMap id="BaseResultMap" type="com.qianmua.pojo.Login">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="loginType" jdbcType="VARCHAR" property="logintype"/>
+        <result column="uuid" jdbcType="VARCHAR" property="uuid"/>
+        <result column="type" jdbcType="BIT" property="type"/>
+    </resultMap>
+
+    <resultMap id="SelectAll" type="com.qianmua.pojo.Login">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="loginType" jdbcType="VARCHAR" property="logintype"/>
+        <result column="uuid" jdbcType="VARCHAR" property="uuid"/>
+        <result column="type" jdbcType="BIT" property="type"/>
+        <association property="singins" javaType="com.qianmua.pojo.Singin">
+            <id column="id" jdbcType="VARCHAR" property="id"/>
+            <result column="country" jdbcType="VARCHAR" property="country"/>
+            <result column="address" jdbcType="VARCHAR" property="address"/>
+            <result column="province" jdbcType="VARCHAR" property="province"/>
+            <result column="city" jdbcType="VARCHAR" property="city"/>
+            <result column="latitude" jdbcType="VARCHAR" property="latitude"/>
+            <result column="description" jdbcType="VARCHAR" property="description"/>
+            <result column="plan_id" jdbcType="VARCHAR" property="planId"/>
+            <result column="type" jdbcType="VARCHAR" property="type"/>
+            <result column="device" jdbcType="VARCHAR" property="device"/>
+            <result column="longitude" jdbcType="VARCHAR" property="longitude"/>
+            <result column="login_id" jdbcType="VARCHAR" property="loginId"/>
+
+        </association>
+    </resultMap>
+
+
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+    id, password, phone, loginType, uuid, type
+  </sql>
+    <select id="selectByExample" parameterType="com.qianmua.pojo.LoginExample" resultMap="BaseResultMap">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="Base_Column_List"/>
+        from login
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+
+    <select id="selectAll" resultMap="SelectAll">
+   select    l.id, l.password, l.phone, l.loginType, l.uuid, l.type ,
+s.id, s.country, s.address, s.province, s.city, s.latitude, s.description,s. plan_id, s.type, s.device, s.longitude, login_id
+    FROM
+    login l
+    LEFT JOIN singin s ON l.id = s.login_id
+
+  </select>
+
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from login
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from login
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+    <delete id="deleteByExample" parameterType="com.qianmua.pojo.LoginExample">
+        delete from login
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </delete>
+    <insert id="insert" parameterType="com.qianmua.pojo.Login">
+    insert into login (id, password, phone, 
+      loginType, uuid, type)
+    values (#{id,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
+      #{logintype,jdbcType=VARCHAR}, #{uuid,jdbcType=VARCHAR}, #{type,jdbcType=BIT})
+  </insert>
+    <insert id="insertSelective" parameterType="com.qianmua.pojo.Login">
+        insert into login
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="password != null">
+                password,
+            </if>
+            <if test="phone != null">
+                phone,
+            </if>
+            <if test="logintype != null">
+                loginType,
+            </if>
+            <if test="uuid != null">
+                uuid,
+            </if>
+            <if test="type != null">
+                type,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="logintype != null">
+                #{logintype,jdbcType=VARCHAR},
+            </if>
+            <if test="uuid != null">
+                #{uuid,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                #{type,jdbcType=BIT},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample" parameterType="com.qianmua.pojo.LoginExample" resultType="java.lang.Long">
+        select count(*) from login
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+        update login
+        <set>
+            <if test="record.id != null">
+                id = #{record.id,jdbcType=VARCHAR},
+            </if>
+            <if test="record.password != null">
+                password = #{record.password,jdbcType=VARCHAR},
+            </if>
+            <if test="record.phone != null">
+                phone = #{record.phone,jdbcType=VARCHAR},
+            </if>
+            <if test="record.logintype != null">
+                loginType = #{record.logintype,jdbcType=VARCHAR},
+            </if>
+            <if test="record.uuid != null">
+                uuid = #{record.uuid,jdbcType=VARCHAR},
+            </if>
+            <if test="record.type != null">
+                type = #{record.type,jdbcType=BIT},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map">
+        update login
+        set id = #{record.id,jdbcType=VARCHAR},
+        password = #{record.password,jdbcType=VARCHAR},
+        phone = #{record.phone,jdbcType=VARCHAR},
+        loginType = #{record.logintype,jdbcType=VARCHAR},
+        uuid = #{record.uuid,jdbcType=VARCHAR},
+        type = #{record.type,jdbcType=BIT}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="com.qianmua.pojo.Login">
+        update login
+        <set>
+            <if test="password != null">
+                password = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="logintype != null">
+                loginType = #{logintype,jdbcType=VARCHAR},
+            </if>
+            <if test="uuid != null">
+                uuid = #{uuid,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                type = #{type,jdbcType=BIT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.qianmua.pojo.Login">
+    update login
+    set password = #{password,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      loginType = #{logintype,jdbcType=VARCHAR},
+      uuid = #{uuid,jdbcType=VARCHAR},
+      type = #{type,jdbcType=BIT}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
