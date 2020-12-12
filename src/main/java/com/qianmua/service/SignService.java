@@ -82,7 +82,7 @@ public class SignService {
             System.out.println(dateFormat.format(new Date()) + "  登录成功：" + json);
             User parse = JsonUtils.parse(json, User.class);
 
-            if (parse != null)
+            if (parse == null)
                 return;
 
             token = parse.getData().getToken();

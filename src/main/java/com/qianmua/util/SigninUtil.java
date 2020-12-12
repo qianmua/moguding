@@ -4,11 +4,13 @@ import com.qianmua.constant.AutoManageType;
 import com.qianmua.constant.RandomChickenSoup;
 import com.qianmua.pojo.User;
 import com.qianmua.pojo.vo.AutoWriteDayInfo;
+import com.qianmua.pojo.vo.AutoWriteWeekInfo;
 import com.qianmua.pojo.vo.LoginVo;
 import com.qianmua.pojo.vo.SinginVo;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
@@ -61,6 +63,22 @@ public class SigninUtil {
 
         NetworkApi.request(JsonUtils.serialize(info), autoWriteUrl, token,
                 json1 -> System.out.println(" 自动日报写入 : "  + json1));
+
+    }
+
+    private void autoWriteWeek(SinginVo singinVo , String token , String url){
+        AutoWriteWeekInfo weekInfo = new AutoWriteWeekInfo();
+
+        weekInfo.setAttachmentList(new ArrayList<>())
+                .setAttachments("")
+                .setContent(getRandomChickenSoup())
+                .setPlanId(singinVo.getPlanId())
+                .setReportType(AutoManageType.AUTO__WRITE_WEEK)
+                .setTitle(AutoManageType.AUTO_TITLE)
+                .setStartTime(LocalDateTime.now())
+                .setEndTime(LocalDateTime.now().plusWeeks(1))
+                .setWeeks("")
+
     }
 
     /**
