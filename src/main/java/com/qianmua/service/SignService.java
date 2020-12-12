@@ -86,11 +86,9 @@ public class SignService {
                 return;
 
             token = parse.getData().getToken();
-            System.out.println("token -> " + token);
             //获取任务id
             this.getPlan(plan, dateFormat, token);
         });
-        System.out.println(Arrays.toString(plan));
         Thread.sleep(5000);
         return plan[0];
     }

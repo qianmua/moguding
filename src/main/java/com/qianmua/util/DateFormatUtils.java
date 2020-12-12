@@ -46,6 +46,7 @@ public class DateFormatUtils {
                 .parse(AutoManageType.BASE_WEEK + " 23:59:59",
                         DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
                 .plusWeeks(2)
+                .minusDays(1)
                 .toString()
                 .replaceAll("T", " ");
     }
@@ -62,7 +63,7 @@ public class DateFormatUtils {
     }
 
     public static boolean isDayLast(){
-        return LocalTime.now().getHour() < 17;
+        return LocalTime.now().getHour() > 17;
     }
 
     /**
@@ -72,7 +73,5 @@ public class DateFormatUtils {
     public static String getMonth(){
         return LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
     }
-
-
 
 }

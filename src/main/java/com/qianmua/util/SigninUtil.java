@@ -70,7 +70,7 @@ public class SigninUtil {
         // 周
         if (DateFormatUtils.isThisWeekSaturday()){
             System.out.println(LocalDateTime.now() + " 周报：" );
-            autoWriteWeek(singin , token , uri);
+            autoWriteWeek(singin , token , autoWriteUrl);
         }else
             System.out.println(LocalDateTime.now() + " 周报条件不足");
 
@@ -93,11 +93,11 @@ public class SigninUtil {
                 .setAttachments("")
                 .setContent(getRandomChickenSoup())
                 .setPlanId(singin.getPlanId())
-                .setReportType(AutoManageType.AUTO__WRITE_DAY)
+                .setReportType(type)
                 .setTitle(AutoManageType.AUTO_TITLE);
 
         NetworkApi.request(JsonUtils.serialize(info), autoWriteUrl, token,
-                json1 -> System.out.println( LocalDate.now() + " 自动日报写入 : "  + json1));
+                json1 -> System.out.println( LocalDate.now() + " 自动月报写入 : "  + json1));
     }
 
     /**
