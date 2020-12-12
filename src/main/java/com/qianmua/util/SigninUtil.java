@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ public class SigninUtil {
             String token = parse.getData().getToken();
             // 自动签到
             autoSign(singin, dateFormat, token);
-            // 自动日报
+            // 自动填写周报日报月报
             AutoWrite(singin, token);
 
         });
@@ -60,19 +61,26 @@ public class SigninUtil {
         String autoWriteUrl = uri + "/practice/paper/v1/save";
 
         // 日
-        autoWriteDay(singin, token, autoWriteUrl , AutoManageType.AUTO__WRITE_DAY);
+        if (DateFormatUtils.isDayLast()){
+            System.out.println(LocalDateTime.now() + " 日报:");
+            autoWriteDay(singin, token, autoWriteUrl , AutoManageType.AUTO__WRITE_DAY);
+        }else
+            System.out.println(LocalDateTime.now() + " 日报条件不足");
 
         // 周
         if (DateFormatUtils.isThisWeekSaturday()){
-            System.out.println(LocalDate.now() + " 周报：" );
+            System.out.println(LocalDateTime.now() + " 周报：" );
             autoWriteWeek(singin , token , uri);
-        }
+        }else
+            System.out.println(LocalDateTime.now() + " 周报条件不足");
+
 
         // 月
         if (DateFormatUtils.isThisMonthLast()){
-            System.out.println(LocalDate.now().getDayOfMonth() + " 月报: ");
+            System.out.println(LocalDateTime.now().getDayOfMonth() + " 月报: ");
             autoWriteDay(singin, token, autoWriteUrl , AutoManageType.AUTO__WRITE_MONTH);
-        }
+        }else
+            System.out.println(LocalDateTime.now() + " 月报条件不足");
 
     }
 

@@ -30,4 +30,16 @@ public interface AutoManageType {
     String QUARTZ_GROUP1 = "group1";
     String QUARTZ_GROUP2 = "group2";
 
+    // base week
+    String BASE_WEEK = "2020-11-30";
+
+    // base month
+    String BASE_MONTH = "2020-12";
+
+    // 周六 打周报
+     String WRITE_WEEK_ = "SATURDAY";
+
+    // 每月28号 打月报
+    String WRITE_MONTH_28 = "";
+
 }
