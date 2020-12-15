@@ -7,6 +7,8 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
+import java.time.LocalDateTime;
+
 public class MyCronJob extends QuartzJobBean {
 
     @Autowired
@@ -17,6 +19,9 @@ public class MyCronJob extends QuartzJobBean {
      */
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+        System.out.println("===========================================================");
+        System.out.println("quartz 执行: " + LocalDateTime.now());
+        System.out.println("===========================================================");
         try {
             signService.sign();
         } catch (InterruptedException e) {

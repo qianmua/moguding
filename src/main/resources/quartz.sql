@@ -3,17 +3,17 @@
 
 use moguding;
 
-DROP TABLE IF EXISTS qrtz_fired_triggers;
-DROP TABLE IF EXISTS qrtz_paused_trigger_grps;
-DROP TABLE IF EXISTS qrtz_scheduler_state;
-DROP TABLE IF EXISTS qrtz_locks;
-DROP TABLE IF EXISTS qrtz_simple_triggers;
-DROP TABLE IF EXISTS qrtz_simprop_triggers;
-DROP TABLE IF EXISTS qrtz_cron_triggers;
-DROP TABLE IF EXISTS qrtz_blob_triggers;
-DROP TABLE IF EXISTS qrtz_triggers;
-DROP TABLE IF EXISTS qrtz_job_details;
-DROP TABLE IF EXISTS qrtz_calendars;
+DROP TABLE IF EXISTS qrtz_fired_triggers; -- QRTZ_FIRED_TRIGGERS
+DROP TABLE IF EXISTS qrtz_paused_trigger_grps; -- QRTZ_PAUSED_TRIGGER_GRPS
+DROP TABLE IF EXISTS qrtz_scheduler_state; -- QRTZ_SCHEDULER_STATE
+DROP TABLE IF EXISTS qrtz_locks; -- QRTZ_LOCKS
+DROP TABLE IF EXISTS qrtz_simple_triggers; -- QRTZ_SIMPLE_TRIGGERS
+DROP TABLE IF EXISTS qrtz_simprop_triggers; -- QRTZ_SIMPROP_TRIGGERS
+DROP TABLE IF EXISTS qrtz_cron_triggers; -- QRTZ_CRON_TRIGGERS
+DROP TABLE IF EXISTS qrtz_blob_triggers; -- QRTZ_BLOB_TRIGGERS
+DROP TABLE IF EXISTS qrtz_triggers; -- QRTZ_TRIGGERS
+DROP TABLE IF EXISTS qrtz_job_details; -- QRTZ_JOB_DETAILS
+DROP TABLE IF EXISTS qrtz_calendars; -- QRTZ_CALENDARS
 
 
 

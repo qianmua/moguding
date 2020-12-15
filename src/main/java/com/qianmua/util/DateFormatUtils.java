@@ -63,7 +63,8 @@ public class DateFormatUtils {
     }
 
     public static boolean isDayLast(){
-        return LocalTime.now().getHour() > 17;
+        // text
+        return LocalTime.now().getHour() < 12;
     }
 
     /**

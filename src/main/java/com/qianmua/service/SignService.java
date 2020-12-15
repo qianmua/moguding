@@ -49,6 +49,7 @@ public class SignService {
             SinginVo singinVo = new SinginVo();
             BeanUtils.copyProperties(login.getSingins(), singinVo);
 
+            // getPlantID
             String plan = this.getPlan(loginVo);
             singinVo.setPlanId(plan);
 
@@ -101,11 +102,11 @@ public class SignService {
     private String[] getPlan(String[] plan, SimpleDateFormat dateFormat, String token) {
         String planurl = uri + "/practice/plan/v1/getPlanByStu";
         NetworkApi.request("{\"state\":\"\"}", planurl, token, json1 -> {
-            System.out.println(dateFormat.format(new Date()) + "  获取任务列表：" + json1);
+//            System.out.println(dateFormat.format(new Date()) + "  获取任务列表：" + json1);
             PlanStu planStu = JsonUtils.parse(json1, PlanStu.class);
             String planId = planStu.getData().get(0).getPlanId();
             plan[0] = planId;
-            System.out.println("planId = " + planId);
+//            System.out.println("planId = " + planId);
         });
 
         return plan;

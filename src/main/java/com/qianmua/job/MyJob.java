@@ -1,19 +1,12 @@
 package com.qianmua.job;
 
-import com.qianmua.dao.LoginMapper;
-import com.qianmua.pojo.Login;
-import com.qianmua.pojo.vo.LoginVo;
-import com.qianmua.pojo.vo.SinginVo;
 import com.qianmua.service.SignService;
-import com.qianmua.util.SigninUtil;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
-import java.util.Calendar;
-import java.util.List;
+import java.time.LocalDateTime;
 
 
 public class MyJob extends QuartzJobBean {
@@ -26,6 +19,11 @@ public class MyJob extends QuartzJobBean {
      */
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+
+        System.out.println("===========================================================");
+        System.out.println("quartz 执行: " + LocalDateTime.now());
+        System.out.println("===========================================================");
+
         try {
             signService.sign();
         } catch (InterruptedException e) {
