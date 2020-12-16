@@ -47,7 +47,7 @@ public class GlobalExceptionHandler {
     @ResponseBody
     public String handleException(Throwable e) throws MessagingException {
 
-        e.printStackTrace();
+        log.error(" e.message [from exception] : {}" , e.getMessage());
         emailUtil.SendEmail(e.getMessage(),e.toString());
         return "服务器发生异常";
     }

@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface LoginMapper {
+
     long countByExample(LoginExample example);
 
     int deleteByExample(LoginExample example);

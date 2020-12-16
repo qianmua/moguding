@@ -42,13 +42,10 @@ public class QuartzController {
     public String scheduleJob2() {
         //"20 10 8,17 * * ?"/
         try {
-
             // //每五秒执行一次
             myScheduler.startJob("25 01 18 * * ?", AutoManageType.QUARTZ_JOB2, AutoManageType.QUARTZ_GROUP2, MyCronJob.class);
             myScheduler.startJob("25 51 8 * * ?", AutoManageType.QUARTZ_JOB1, AutoManageType.QUARTZ_GROUP1, MyJob.class);
-
             return "启动定时器成功";
-
         } catch (SchedulerException e) {
             e.printStackTrace();
         }

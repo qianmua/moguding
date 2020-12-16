@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface SinginMapper {
+
     long countByExample(SinginExample example);
 
     int deleteByExample(SinginExample example);

@@ -28,7 +28,6 @@ public class MyCronJob extends QuartzJobBean {
             System.err.println("定时任务异常：");
             e.printStackTrace();
         }
-
     }
 
 }
