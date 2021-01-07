@@ -19,15 +19,7 @@ public class MyCronJob extends QuartzJobBean {
      */
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        System.out.println("===========================================================");
-        System.out.println("quartz 执行: " + LocalDateTime.now());
-        System.out.println("===========================================================");
-        try {
-            signService.sign();
-        } catch (InterruptedException e) {
-            System.err.println("定时任务异常：");
-            e.printStackTrace();
-        }
+        signService.autoJob();
     }
 
 }

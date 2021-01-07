@@ -39,7 +39,6 @@ public class UserserviceImpl implements Userservice {
     public void addUser(Login login) throws InterruptedException {
         String replace = UUID.randomUUID().toString().replace("-", "");
 
-
         LoginVo loginvo = new LoginVo();
         BeanUtils.copyProperties(login,loginvo);
         loginvo.setLoginType(login.getLogintype());

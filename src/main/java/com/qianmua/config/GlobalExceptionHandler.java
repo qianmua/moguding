@@ -30,8 +30,11 @@ public class GlobalExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    @Autowired
-    private EmailUtil emailUtil;
+    private final EmailUtil emailUtil;
+
+    public GlobalExceptionHandler(EmailUtil emailUtil) {
+        this.emailUtil = emailUtil;
+    }
 
     /**
      * 其它全局异常
@@ -48,7 +51,8 @@ public class GlobalExceptionHandler {
     public String handleException(Throwable e) throws MessagingException {
 
         log.error(" e.message [from exception] : {}" , e.getMessage());
-        emailUtil.SendEmail(e.getMessage(),e.toString());
+        emailUtil.signErrorMailNotify(e.getMessage(),e.toString());
+
         return "服务器发生异常";
     }
 }

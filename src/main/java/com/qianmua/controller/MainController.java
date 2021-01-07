@@ -24,27 +24,39 @@ import java.lang.annotation.Documented;
 import java.util.List;
 
 @Controller
-@RequestMapping("/quartz")
-public class QuartzController {
-    @Autowired
-    public SchedulerManager myScheduler;
-    @Autowired
-    private LoginMapper loginMapper;
-    @Autowired
-    private SigninUtil signinUtil;
-    @Autowired
-    private Userservice userservice;
-    @Autowired
-    private SignService signService;
+@RequestMapping("/mogu")
+public class MainController {
 
-    @RequestMapping(value = "/job2", method = RequestMethod.GET)
+    public final SchedulerManager myScheduler;
+    private final LoginMapper loginMapper;
+    private final SigninUtil signinUtil;
+    private final Userservice userservice;
+    private final SignService signService;
+
+    public MainController(SchedulerManager myScheduler, LoginMapper loginMapper,
+                          SigninUtil signinUtil, Userservice userservice,
+                          SignService signService) {
+
+        this.myScheduler = myScheduler;
+        this.loginMapper = loginMapper;
+        this.signinUtil = signinUtil;
+        this.userservice = userservice;
+        this.signService = signService;
+    }
+
+    @RequestMapping(value = "/job/start", method = RequestMethod.GET)
     @ResponseBody
     public String scheduleJob2() {
         //"20 10 8,17 * * ?"/
         try {
             // //每五秒执行一次
+            // 这里小心，会和数据库中的一起执行
+            // 会额外产生签到和日志
             myScheduler.startJob("25 01 18 * * ?", AutoManageType.QUARTZ_JOB2, AutoManageType.QUARTZ_GROUP2, MyCronJob.class);
             myScheduler.startJob("25 51 8 * * ?", AutoManageType.QUARTZ_JOB1, AutoManageType.QUARTZ_GROUP1, MyJob.class);
+
+            // TODO 启动后发送邮件消息
+
             return "启动定时器成功";
         } catch (SchedulerException e) {
             e.printStackTrace();
@@ -52,11 +64,14 @@ public class QuartzController {
         return "启动定时器失败";
     }
 
-    @RequestMapping(value = "/del_job2", method = RequestMethod.GET)
+    @RequestMapping(value = "/job/end", method = RequestMethod.GET)
     @ResponseBody
     public String deleteScheduleJob2() {
         try {
             myScheduler.deleteJob(AutoManageType.QUARTZ_JOB2, AutoManageType.QUARTZ_GROUP2);
+
+            // TODO 停止后发送邮件消息
+
             return "删除定时器成功";
         } catch (SchedulerException e) {
             e.printStackTrace();
@@ -91,7 +106,7 @@ public class QuartzController {
         return signService.sign();
     }
 
-    /*
+    /**
     * ===========================================================
     *   下面方法准备进行重构
     * ===========================================================
@@ -111,7 +126,7 @@ public class QuartzController {
             loginVo.setLoginType(login.getLogintype());
             SinginVo singinVo = new SinginVo();
             BeanUtils.copyProperties(login.getSingins(), singinVo);
-            signinUtil.Sign(loginVo, singinVo);
+            signinUtil.doSign(loginVo, singinVo);
 
         }
     }

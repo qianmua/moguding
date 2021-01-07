@@ -2,6 +2,7 @@ package com.qianmua.util;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
@@ -21,23 +22,40 @@ public class EmailUtil {
     @Autowired
     private JavaMailSender javaMailSender;
 
+    @Value("${mail.send-mail-from}")
+    private String sendFrom;
+    @Value("${mail.send-mail-to}")
+    private String sendTo;
+    @Value("${mail.mogu-send-title}")
+    private String title;
+
     /**
      * 任务回执
-     * @param message
-     * @param e
-     * @throws MessagingException
+     * @param message 消息内容
+     * @param e 。
+     * @throws MessagingException 消息异常
      */
-    public  void SendEmail(String message,String e) throws MessagingException {
-
+    public void signErrorMailNotify(String message,String e) throws MessagingException {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
-        messageHelper.setSubject("系统出现错误！！！！");
-        messageHelper.setFrom("2174521520@qq.com");
-        messageHelper.setTo("2674521520@qq.com");
-        messageHelper.setText("<h1>" + "" + "错误原因" + message+"      "+e, true);
+        messageHelper.setSubject("mogu auto clock");
+        messageHelper.setFrom(sendFrom);
+        messageHelper.setTo(sendTo);
+        messageHelper.setText("<h1>" + "" + "error message : " + message+"      "+e, true);
         javaMailSender.send(messageHelper.getMimeMessage());
-
     }
+
+    public void signSuccessMailNotify(String message) throws MessagingException {
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
+        messageHelper.setSubject("mogu auto clock.");
+        messageHelper.setFrom(sendFrom);
+        messageHelper.setTo(sendTo);
+        messageHelper.setText("<h1>" + message + "</h1>", true);
+        javaMailSender.send(messageHelper.getMimeMessage());
+    }
+
+
 
 
 }

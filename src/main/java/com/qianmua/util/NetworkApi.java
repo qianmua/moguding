@@ -13,7 +13,7 @@ public class NetworkApi {
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
             .build();
-    public static void request(String  requestContent,String url,String token, final Mycall mycall) {
+    public static void request(String  requestContent,String url,String token, final CallRequest callRequest) {
 
         final RequestBody requestBody = RequestBody.create(mediaType, requestContent);
         //要访问的地址
@@ -34,7 +34,7 @@ public class NetworkApi {
             }
 
             public void onResponse(Call call, Response response) throws IOException {
-                mycall.success(response.body().string());
+                callRequest.success(response.body().string());
             }
         });
     }

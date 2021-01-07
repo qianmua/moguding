@@ -15,15 +15,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author 宋LS
  * @version 1.0
  * @date 2020/9/6 16:31
+ * change by qianmu. date: 21/1/7
  */
 @Service
 public class SignService {
@@ -54,11 +54,15 @@ public class SignService {
             singinVo.setPlanId(plan);
 
             int i =  Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+
+            // 签到状态转换
             singinVo.setType(i <= 12 ? AutoManageType.AUTO_START_MARK : AutoManageType.AUTO_END_MARK);
 
-            new SigninUtil().Sign(loginVo, singinVo);
+            // 签到
+            new SigninUtil().doSign(loginVo, singinVo);
+
             try {
-                Thread.sleep(20);
+                TimeUnit.MILLISECONDS.sleep(20);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -88,28 +92,45 @@ public class SignService {
 
             token = parse.getData().getToken();
             //获取任务id
-            this.getPlan(plan, dateFormat, token);
+            // 引用传递
+            this.doGetPlan(plan, dateFormat, token);
         });
-        Thread.sleep(5000);
+
+        TimeUnit.SECONDS.sleep(5);
         return plan[0];
+    }
+
+
+    public void autoJob(){
+        System.out.println("===========================================================");
+        System.out.println("quartz 执行: " + LocalDateTime.now());
+        System.out.println("===========================================================");
+        try {
+            this.sign();
+        } catch (InterruptedException e) {
+            System.err.println("定时任务异常：");
+            e.printStackTrace();
+        }
     }
 
 
     /**
      * get
-     * @param token
+     * @param token token
      */
-    private String[] getPlan(String[] plan, SimpleDateFormat dateFormat, String token) {
-        String planurl = uri + "/practice/plan/v1/getPlanByStu";
-        NetworkApi.request("{\"state\":\"\"}", planurl, token, json1 -> {
+    private void doGetPlan(String[] plan, SimpleDateFormat dateFormat, String token) {
+        String planUrl = uri + "/practice/plan/v1/getPlanByStu";
+        NetworkApi.request("{\"state\":\"\"}", planUrl, token, json1 -> {
 //            System.out.println(dateFormat.format(new Date()) + "  获取任务列表：" + json1);
             PlanStu planStu = JsonUtils.parse(json1, PlanStu.class);
+            // NPE 断言
+            Objects.requireNonNull(planStu);
+
             String planId = planStu.getData().get(0).getPlanId();
             plan[0] = planId;
 //            System.out.println("planId = " + planId);
         });
 
-        return plan;
     }
 
 
