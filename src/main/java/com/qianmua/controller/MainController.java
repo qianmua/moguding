@@ -106,6 +106,20 @@ public class MainController {
         return signService.sign();
     }
 
+
+    /**
+     * 添加用户
+     * @param login 实参
+     * @throws InterruptedException
+     */
+    @RequestMapping("/insert/member")
+    public String addMember(@RequestBody Login login) throws InterruptedException {
+        // TODO 添加用户重构
+        userservice.addUser(login);
+        return "添加成功";
+    }
+
+
     /**
     * ===========================================================
     *   下面方法准备进行重构
