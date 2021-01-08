@@ -8,10 +8,9 @@
  * @date 2019年9月12日
  */
 package com.qianmua.config;
-import com.qianmua.util.EmailUtil;
+import com.qianmua.mail.MailServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -30,10 +29,10 @@ public class GlobalExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    private final EmailUtil emailUtil;
+    private final MailServer mailServer;
 
-    public GlobalExceptionHandler(EmailUtil emailUtil) {
-        this.emailUtil = emailUtil;
+    public GlobalExceptionHandler(MailServer mailServer) {
+        this.mailServer = mailServer;
     }
 
     /**
@@ -51,8 +50,8 @@ public class GlobalExceptionHandler {
     public String handleException(Throwable e) throws MessagingException {
 
         log.error(" e.message [from exception] : {}" , e.getMessage());
-        emailUtil.signErrorMailNotify(e.getMessage(),e.toString());
+        mailServer.signErrorMailNotify(e.getMessage(),e.toString());
 
-        return "服务器发生异常";
+        return "server Error";
     }
 }

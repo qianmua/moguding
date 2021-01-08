@@ -1,13 +1,11 @@
 package com.qianmua.job;
 
 
-import com.qianmua.service.SignService;
+import com.qianmua.sign.in.SignService;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.QuartzJobBean;
-
-import java.time.LocalDateTime;
 
 public class MyCronJob extends QuartzJobBean {
 

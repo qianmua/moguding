@@ -7,5 +7,5 @@ import java.util.List;
 public interface Userservice {
     List<Login> getLoginInfo();
 
-    void addUser(Login login) throws InterruptedException;
+    void addUser(Login login);
 }

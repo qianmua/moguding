@@ -3,8 +3,8 @@ package com.qianmua.api;
 import com.qianmua.dao.LoginMapper;
 import com.qianmua.pojo.Login;
 import com.qianmua.pojo.vo.LoginVo;
-import com.qianmua.service.SignService;
-import com.qianmua.util.SigninUtil;
+import com.qianmua.sign.in.SignService;
+import com.qianmua.sign.in.SignInServer;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +18,7 @@ import java.util.List;
  * @version 1.0
  * 谦谦君子 卑以自牧也
  * @date 2020/12/11  13:29
- * @description :
+ * @description : 这里不打算重构了，在原有的类上面重构，不保留以前的代码
  */
 @RestController
 @RequestMapping("/api")
@@ -38,14 +38,10 @@ public class AutoOption {
             BeanUtils.copyProperties(login, loginVo);
             String plan = null;
 
-            try {
-                plan = signService.getPlan(loginVo);
-            } catch (InterruptedException e) {
-                System.err.println(" err info -> " + login);
-            }
+            plan = signService.getPlan(loginVo);
 
             // option send
-            SigninUtil signinUtil = new SigninUtil();
+            SignInServer signInServer = new SignInServer();
 
             // auto write
 //            signService.autoWrite(plan);

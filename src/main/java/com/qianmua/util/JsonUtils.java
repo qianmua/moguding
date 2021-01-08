@@ -19,10 +19,12 @@ import java.util.Map;
  **/
 public class JsonUtils {
 
+    /**
+     * jackson
+     */
     public static final ObjectMapper mapper = new ObjectMapper();
 
     private static final Logger logger = LoggerFactory.getLogger(JsonUtils.class);
-
 
     public static String serialize(Object obj) {
         if (obj == null) {
@@ -31,6 +33,7 @@ public class JsonUtils {
         if (obj.getClass() == String.class) {
             return (String) obj;
         }
+
         try {
             return mapper.writeValueAsString(obj);
         } catch (JsonProcessingException e) {
@@ -68,7 +71,6 @@ public class JsonUtils {
         }
     }
 
-
     public static <T> T nativeRead(String json, TypeReference<T> type) {
         try {
             return mapper.readValue(json, type);
@@ -77,21 +79,5 @@ public class JsonUtils {
             return null;
         }
     }
-
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    static class User {
-        private String name;
-        private String sex;
-    }
-
-    public static void main(String[] args) {
-        User user = new User("song","song");
-        System.out.println("user = " + user);
-        //language=JSON
-        String json = "{\"name\": \"song\",\"sex\": \"男\"}";
-    }
-
 }
 

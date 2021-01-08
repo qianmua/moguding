@@ -1,4 +1,4 @@
-package com.qianmua.service;
+package com.qianmua.sign.in;
 
 import com.qianmua.constant.AutoManageType;
 import com.qianmua.dao.LoginMapper;
@@ -10,7 +10,6 @@ import com.qianmua.pojo.vo.LoginVo;
 import com.qianmua.pojo.vo.SinginVo;
 import com.qianmua.util.JsonUtils;
 import com.qianmua.util.NetworkApi;
-import com.qianmua.util.SigninUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -60,7 +59,7 @@ public class SignService implements AutoRunningJob {
             singinVo.setType(i <= 12 ? AutoManageType.AUTO_START_MARK : AutoManageType.AUTO_END_MARK);
 
             // 签到
-            new SigninUtil().doSign(loginVo, singinVo);
+            new SignInServer().doSign(loginVo, singinVo);
 
             try {
                 TimeUnit.MILLISECONDS.sleep(20);
@@ -76,7 +75,7 @@ public class SignService implements AutoRunningJob {
      *     login
      * @return ID
      */
-    public String getPlan(LoginVo login) throws InterruptedException {
+    public String getPlan(LoginVo login) {
 
         final String[] plan = new String[1];
         String loginurl = uri + "/session/user/v1/login";
@@ -97,8 +96,17 @@ public class SignService implements AutoRunningJob {
             this.doGetPlan(plan, dateFormat, token);
         });
 
-        TimeUnit.SECONDS.sleep(5);
-        return plan[0];
+        // 请在这里即时处理中断
+        try {
+            TimeUnit.SECONDS.sleep(5);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return Optional
+                .ofNullable(plan[0])
+                .orElse(null);
+//        return plan[0];
     }
 
     /**

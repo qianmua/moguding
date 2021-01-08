@@ -8,19 +8,17 @@ import com.qianmua.job.SchedulerManager;
 import com.qianmua.pojo.Login;
 import com.qianmua.pojo.vo.LoginVo;
 import com.qianmua.pojo.vo.SinginVo;
-import com.qianmua.service.SignService;
+import com.qianmua.sign.in.SignService;
 import com.qianmua.service.Userservice;
-import com.qianmua.util.SigninUtil;
+import com.qianmua.sign.in.SignInServer;
 import org.quartz.SchedulerException;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.lang.annotation.Documented;
 import java.util.List;
 
 @Controller
@@ -29,17 +27,17 @@ public class MainController {
 
     public final SchedulerManager myScheduler;
     private final LoginMapper loginMapper;
-    private final SigninUtil signinUtil;
+    private final SignInServer signInServer;
     private final Userservice userservice;
     private final SignService signService;
 
     public MainController(SchedulerManager myScheduler, LoginMapper loginMapper,
-                          SigninUtil signinUtil, Userservice userservice,
+                          SignInServer signInServer, Userservice userservice,
                           SignService signService) {
 
         this.myScheduler = myScheduler;
         this.loginMapper = loginMapper;
-        this.signinUtil = signinUtil;
+        this.signInServer = signInServer;
         this.userservice = userservice;
         this.signService = signService;
     }
@@ -110,11 +108,10 @@ public class MainController {
     /**
      * 添加用户
      * @param login 实参
-     * @throws InterruptedException
      */
     @RequestMapping("/insert/member")
     @ResponseBody
-    public String addMember(@RequestBody Login login) throws InterruptedException {
+    public String addMember(@RequestBody Login login) {
         userservice.addUser(login);
         return "insert success.";
     }
@@ -140,7 +137,7 @@ public class MainController {
             loginVo.setLoginType(login.getLogintype());
             SinginVo singinVo = new SinginVo();
             BeanUtils.copyProperties(login.getSingins(), singinVo);
-            signinUtil.doSign(loginVo, singinVo);
+            signInServer.doSign(loginVo, singinVo);
 
         }
     }

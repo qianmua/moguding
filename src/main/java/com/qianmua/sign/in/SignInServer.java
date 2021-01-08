@@ -1,4 +1,4 @@
-package com.qianmua.util;
+package com.qianmua.sign.in;
 
 import com.qianmua.constant.AutoManageType;
 import com.qianmua.constant.RandomChickenSoup;
@@ -7,6 +7,9 @@ import com.qianmua.pojo.vo.AutoWriteDayInfo;
 import com.qianmua.pojo.vo.AutoWriteWeekInfo;
 import com.qianmua.pojo.vo.LoginVo;
 import com.qianmua.pojo.vo.SinginVo;
+import com.qianmua.util.DateFormatUtils;
+import com.qianmua.util.JsonUtils;
+import com.qianmua.util.NetworkApi;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
@@ -28,7 +31,7 @@ import java.util.Random;
  * @description : 执行签到
  */
 @Component
-public class SigninUtil {
+public class SignInServer {
 
     /**
      * BASE API
@@ -38,7 +41,7 @@ public class SigninUtil {
     /**
      * sign with
      */
-    public  synchronized void doSign(LoginVo login, final SinginVo singin) {
+    public synchronized void doSign(LoginVo login, final SinginVo singin) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss") ;
         String loginurl = uri + "/session/user/v1/login";
 

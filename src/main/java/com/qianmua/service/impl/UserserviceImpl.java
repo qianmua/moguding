@@ -5,7 +5,7 @@ import com.qianmua.dao.SinginMapper;
 import com.qianmua.pojo.Login;
 import com.qianmua.pojo.Singin;
 import com.qianmua.pojo.vo.LoginVo;
-import com.qianmua.service.SignService;
+import com.qianmua.sign.in.SignService;
 import com.qianmua.service.Userservice;
 import com.qianmua.util.PublicUtils;
 import org.springframework.beans.BeanUtils;
@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class UserserviceImpl implements Userservice {
@@ -40,15 +39,16 @@ public class UserserviceImpl implements Userservice {
      * 这里结构很乱
      * 不太好重构
      * @param login userInfo
-     * @throws InterruptedException 中断
      */
     @Override
-    public void addUser(Login login) throws InterruptedException {
+    public void addUser(Login login) {
         // get planId
         LoginVo loginvo = new LoginVo();
         BeanUtils.copyProperties(login,loginvo);
         loginvo.setLoginType(login.getLogintype());
+
         String plan = signService.getPlan(loginvo);
+
         // save to login table
         String replace = PublicUtils.genUUID();
         login.setId(replace);
