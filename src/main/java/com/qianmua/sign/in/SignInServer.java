@@ -3,6 +3,7 @@ package com.qianmua.sign.in;
 import com.qianmua.constant.AutoManageType;
 import com.qianmua.constant.RandomChickenSoup;
 import com.qianmua.mail.ExecuteSendMailFunction;
+import com.qianmua.mail.MailServer;
 import com.qianmua.pojo.User;
 import com.qianmua.pojo.vo.AutoWriteDayInfo;
 import com.qianmua.pojo.vo.AutoWriteWeekInfo;
@@ -11,8 +12,10 @@ import com.qianmua.pojo.vo.SinginVo;
 import com.qianmua.util.DateFormatUtils;
 import com.qianmua.util.JsonUtils;
 import com.qianmua.util.NetworkApi;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.mail.MessagingException;
 import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -33,6 +36,10 @@ import java.util.Random;
  */
 @Component
 public class SignInServer {
+
+
+    @Autowired
+    private MailServer mailServer;
 
     /**
      * BASE API
@@ -58,9 +65,10 @@ public class SignInServer {
                 return;
 
             String token = parse.getData().getToken();
-            //回调
-            ExecuteSendMailFunction sendMailFunction = (msg) -> {
 
+            // 这里后面在处理先留着， 只做简单的mail功能
+            ExecuteSendMailFunction sendMailFunction = (msg) -> {
+                mailServer.signMailNotify(msg);
             };
 
             checkPlanId(singin);
@@ -70,7 +78,12 @@ public class SignInServer {
             autoWrite(singin, token);
 
             // mail通知
-
+            String s = "签到成功， planId为 :" + singin.getPlanId() + "如果PlanId为空请联系管理员重新签到";
+            try {
+                sendMailFunction.execute(s);
+            } catch (MessagingException e) {
+                e.printStackTrace();
+            }
         });
     }
 
