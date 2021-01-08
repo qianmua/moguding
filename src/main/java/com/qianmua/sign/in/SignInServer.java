@@ -2,6 +2,7 @@ package com.qianmua.sign.in;
 
 import com.qianmua.constant.AutoManageType;
 import com.qianmua.constant.RandomChickenSoup;
+import com.qianmua.mail.ExecuteSendMailFunction;
 import com.qianmua.pojo.User;
 import com.qianmua.pojo.vo.AutoWriteDayInfo;
 import com.qianmua.pojo.vo.AutoWriteWeekInfo;
@@ -42,30 +43,33 @@ public class SignInServer {
      * sign with
      */
     public synchronized void doSign(LoginVo login, final SinginVo singin) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss") ;
         String loginurl = uri + "/session/user/v1/login";
 
-        System.out.println(dateFormat.format(new Date())+"   开始登录 登录信息为：" + login);
+        System.out.println( LocalDateTime.now() +"   开始登录 登录信息为：" + login);
         NetworkApi.request(JsonUtils.serialize(login),
                 loginurl,
                 "",
                 json -> {
 
-            System.out.println(dateFormat.format(new Date())+"  登录成功：" + json);
+            System.out.println(LocalDateTime.now() + "  登录成功：" + json);
             User parse = JsonUtils.parse(json, User.class);
 
             if (parse == null)
                 return;
 
             String token = parse.getData().getToken();
+            //回调
+            ExecuteSendMailFunction sendMailFunction = (msg) -> {
+
+            };
 
             checkPlanId(singin);
 
-            doAutoSign(singin, dateFormat, token);
+            doAutoSign(singin , token);
 
             autoWrite(singin, token);
 
-            // TODO mail通知
+            // mail通知
 
         });
     }
@@ -150,14 +154,13 @@ public class SignInServer {
     /**
      * 自动签到
      * @param singin 信息实体
-     * @param dateFormat 日期格式
      * @param token token
      */
-    private String doAutoSign(SinginVo singin, SimpleDateFormat dateFormat, String token) {
+    private String doAutoSign(SinginVo singin , String token) {
         String sign = uri + "/attendence/clock/v1/save";
 
         NetworkApi.request(JsonUtils.serialize(singin), sign, token,
-                json1 -> System.out.println(dateFormat.format(new Date()) + "  签到成功：" + json1));
+                json1 -> System.out.println( LocalDateTime.now() + "  签到成功：" + json1));
 
         return token;
     }

@@ -80,20 +80,17 @@ public class SignService implements AutoRunningJob {
         final String[] plan = new String[1];
         String loginurl = uri + "/session/user/v1/login";
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");
         //String plan
         NetworkApi.request(JsonUtils.serialize(login), loginurl, "", json -> {
             String token;
-            System.out.println(dateFormat.format(new Date()) + "  登录成功：" + json);
             User parse = JsonUtils.parse(json, User.class);
 
             if (parse == null)
                 return;
 
             token = parse.getData().getToken();
-            //获取任务id
-            // 引用传递
-            this.doGetPlan(plan, dateFormat, token);
+            // 处理数据
+            this.doGetPlan(plan , token);
         });
 
         // 请在这里即时处理中断
@@ -127,20 +124,17 @@ public class SignService implements AutoRunningJob {
 
 
     /**
-     * get
+     * 获取planId 可能返回空
      * @param token token
      */
-    private void doGetPlan(String[] plan, SimpleDateFormat dateFormat, String token) {
+    private void doGetPlan(String[] plan, String token) {
+
         String planUrl = uri + "/practice/plan/v1/getPlanByStu";
         NetworkApi.request("{\"state\":\"\"}", planUrl, token, json1 -> {
-//            System.out.println(dateFormat.format(new Date()) + "  获取任务列表：" + json1);
             PlanStu planStu = JsonUtils.parse(json1, PlanStu.class);
-            // NPE 断言
             Objects.requireNonNull(planStu);
-
             String planId = planStu.getData().get(0).getPlanId();
             plan[0] = planId;
-//            System.out.println("planId = " + planId);
         });
 
     }
