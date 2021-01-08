@@ -37,7 +37,6 @@ import java.util.Random;
 @Component
 public class SignInServer {
 
-
     @Autowired
     private MailServer mailServer;
 
@@ -110,7 +109,6 @@ public class SignInServer {
         }else
             System.out.println(LocalDateTime.now() + " 周报条件不足");
 
-
         // 月
         if (DateFormatUtils.isThisMonthLast()){
             System.out.println(LocalDateTime.now().getDayOfMonth() + " 月报: ");
@@ -175,7 +173,7 @@ public class SignInServer {
         NetworkApi.request(JsonUtils.serialize(singin), sign, token,
                 json1 -> System.out.println( LocalDateTime.now() + "  签到成功：" + json1));
 
-        return token;
+        return singin.getPlanId();
     }
 
     private String getRandomChickenSoup(){

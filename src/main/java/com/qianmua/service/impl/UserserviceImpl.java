@@ -5,7 +5,7 @@ import com.qianmua.dao.SinginMapper;
 import com.qianmua.pojo.Login;
 import com.qianmua.pojo.Singin;
 import com.qianmua.pojo.vo.LoginVo;
-import com.qianmua.sign.in.SignService;
+import com.qianmua.sign.in.SignServer;
 import com.qianmua.service.Userservice;
 import com.qianmua.util.PublicUtils;
 import org.springframework.beans.BeanUtils;
@@ -24,7 +24,7 @@ public class UserserviceImpl implements Userservice {
     private SinginMapper singinMapper;
 
     @Autowired
-    private SignService signService;
+    private SignServer signServer;
 
     @Override
     public List<Login> getLoginInfo() {
@@ -47,7 +47,7 @@ public class UserserviceImpl implements Userservice {
         BeanUtils.copyProperties(login,loginvo);
         loginvo.setLoginType(login.getLogintype());
 
-        String plan = signService.getPlan(loginvo);
+        String plan = signServer.getPlan(loginvo);
 
         // save to login table
         String replace = PublicUtils.genUUID();

@@ -8,7 +8,7 @@ import com.qianmua.job.SchedulerManager;
 import com.qianmua.pojo.Login;
 import com.qianmua.pojo.vo.LoginVo;
 import com.qianmua.pojo.vo.SinginVo;
-import com.qianmua.sign.in.SignService;
+import com.qianmua.sign.in.SignServer;
 import com.qianmua.service.Userservice;
 import com.qianmua.sign.in.SignInServer;
 import org.quartz.SchedulerException;
@@ -29,17 +29,17 @@ public class MainController {
     private final LoginMapper loginMapper;
     private final SignInServer signInServer;
     private final Userservice userservice;
-    private final SignService signService;
+    private final SignServer signServer;
 
     public MainController(SchedulerManager myScheduler, LoginMapper loginMapper,
                           SignInServer signInServer, Userservice userservice,
-                          SignService signService) {
+                          SignServer signServer) {
 
         this.myScheduler = myScheduler;
         this.loginMapper = loginMapper;
         this.signInServer = signInServer;
         this.userservice = userservice;
-        this.signService = signService;
+        this.signServer = signServer;
     }
 
     @RequestMapping(value = "/job/start", method = RequestMethod.GET)
@@ -101,7 +101,7 @@ public class MainController {
     @ResponseBody
     @RequestMapping("autoSign")
     public String sign() throws InterruptedException {
-        return signService.sign();
+        return signServer.sign();
     }
 
 
@@ -156,7 +156,7 @@ public class MainController {
         LoginVo loginvo = new LoginVo();
         BeanUtils.copyProperties(login,loginvo);
         loginvo.setLoginType(login.getLogintype());
-        String plan = signService.getPlan(loginvo);
+        String plan = signServer.getPlan(loginvo);
         return  plan;
     }
 

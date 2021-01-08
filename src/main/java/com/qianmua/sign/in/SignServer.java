@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
  * change by qianmu. date: 21/1/7
  */
 @Service
-public class SignService implements AutoRunningJob {
+public class SignServer implements AutoRunningJob {
 
     @Autowired
     private LoginMapper loginMapper;
@@ -53,10 +53,9 @@ public class SignService implements AutoRunningJob {
             String plan = this.getPlan(loginVo);
             singinVo.setPlanId(plan);
 
-            int i =  Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-
             // 签到状态转换
-            singinVo.setType(i <= 12 ? AutoManageType.AUTO_START_MARK : AutoManageType.AUTO_END_MARK);
+            singinVo.setType( Calendar.getInstance().get(Calendar.HOUR_OF_DAY) <= 12 ?
+                    AutoManageType.AUTO_START_MARK : AutoManageType.AUTO_END_MARK);
 
             // 签到
             new SignInServer().doSign(loginVo, singinVo);
@@ -84,12 +83,8 @@ public class SignService implements AutoRunningJob {
         NetworkApi.request(JsonUtils.serialize(login), loginurl, "", json -> {
             String token;
             User parse = JsonUtils.parse(json, User.class);
-
-            if (parse == null)
-                return;
-
+            Objects.requireNonNull(parse);
             token = parse.getData().getToken();
-            // 处理数据
             this.doGetPlan(plan , token);
         });
 

@@ -3,7 +3,7 @@ package com.qianmua.api;
 import com.qianmua.dao.LoginMapper;
 import com.qianmua.pojo.Login;
 import com.qianmua.pojo.vo.LoginVo;
-import com.qianmua.sign.in.SignService;
+import com.qianmua.sign.in.SignServer;
 import com.qianmua.sign.in.SignInServer;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ import java.util.List;
 public class AutoOption {
 
     @Autowired
-    private SignService signService;
+    private SignServer signServer;
     @Autowired
     private LoginMapper loginMapper;
 
@@ -38,7 +38,7 @@ public class AutoOption {
             BeanUtils.copyProperties(login, loginVo);
             String plan = null;
 
-            plan = signService.getPlan(loginVo);
+            plan = signServer.getPlan(loginVo);
 
             // option send
             SignInServer signInServer = new SignInServer();
