@@ -21,6 +21,12 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.Random;
 
+/**
+ * @author jinchao.hu
+ * @version 1.0
+ * @date 2021/1/8  9:30
+ * @description : 执行签到
+ */
 @Component
 public class SigninUtil {
 
@@ -35,7 +41,7 @@ public class SigninUtil {
     public  synchronized void doSign(LoginVo login, final SinginVo singin) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss") ;
         String loginurl = uri + "/session/user/v1/login";
-        // 一次连接
+
         System.out.println(dateFormat.format(new Date())+"   开始登录 登录信息为：" + login);
         NetworkApi.request(JsonUtils.serialize(login),
                 loginurl,

@@ -113,10 +113,10 @@ public class MainController {
      * @throws InterruptedException
      */
     @RequestMapping("/insert/member")
+    @ResponseBody
     public String addMember(@RequestBody Login login) throws InterruptedException {
-        // TODO 添加用户重构
         userservice.addUser(login);
-        return "添加成功";
+        return "insert success.";
     }
 
 

@@ -7,6 +7,7 @@ import com.qianmua.pojo.Singin;
 import com.qianmua.pojo.vo.LoginVo;
 import com.qianmua.service.SignService;
 import com.qianmua.service.Userservice;
+import com.qianmua.util.PublicUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ public class UserserviceImpl implements Userservice {
 
     @Autowired
     private LoginMapper loginMapper;
+
     @Autowired
     private SinginMapper singinMapper;
 
@@ -34,22 +36,32 @@ public class UserserviceImpl implements Userservice {
         return logins;
     }
 
-//    添加用户
+    /**
+     * 这里结构很乱
+     * 不太好重构
+     * @param login userInfo
+     * @throws InterruptedException 中断
+     */
     @Override
     public void addUser(Login login) throws InterruptedException {
-        String replace = UUID.randomUUID().toString().replace("-", "");
-
+        // get planId
         LoginVo loginvo = new LoginVo();
         BeanUtils.copyProperties(login,loginvo);
         loginvo.setLoginType(login.getLogintype());
         String plan = signService.getPlan(loginvo);
+        // save to login table
+        String replace = PublicUtils.genUUID();
         login.setId(replace);
         loginMapper.insert(login);
+
+        // save to sign table
         Singin singins = login.getSingins();
-        singins.setId(UUID.randomUUID().toString().replace("-", ""));
+        String uuid = PublicUtils.genUUID();
+        singins.setId(uuid);
         singins.setPlanId(plan);
         singins.setLoginId(replace);
-        singinMapper.insert(login.getSingins());
+        singinMapper.insert(singins);
+
     }
 
 

@@ -2,6 +2,7 @@ package com.qianmua.service;
 
 import com.qianmua.constant.AutoManageType;
 import com.qianmua.dao.LoginMapper;
+import com.qianmua.job.AutoRunningJob;
 import com.qianmua.pojo.Login;
 import com.qianmua.pojo.PlanStu;
 import com.qianmua.pojo.User;
@@ -26,7 +27,7 @@ import java.util.concurrent.TimeUnit;
  * change by qianmu. date: 21/1/7
  */
 @Service
-public class SignService {
+public class SignService implements AutoRunningJob {
 
     @Autowired
     private LoginMapper loginMapper;
@@ -35,10 +36,10 @@ public class SignService {
 
     /**
      * 签到
+     * 结构很乱
      * @return status
      */
     public String sign() throws InterruptedException {
-
         List<Login> logins = loginMapper.selectAll();
         for (Login login : logins) {
 
@@ -100,15 +101,18 @@ public class SignService {
         return plan[0];
     }
 
-
+    /**
+     * 自动执行调用接口
+     */
+    @Override
     public void autoJob(){
         System.out.println("===========================================================");
-        System.out.println("quartz 执行: " + LocalDateTime.now());
+        System.out.println("执行时间: " + LocalDateTime.now());
         System.out.println("===========================================================");
         try {
             this.sign();
         } catch (InterruptedException e) {
-            System.err.println("定时任务异常：");
+            System.err.println("exception : " + e.getMessage());
             e.printStackTrace();
         }
     }

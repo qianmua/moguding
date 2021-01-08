@@ -45,7 +45,7 @@ public class EmailUtil {
         javaMailSender.send(messageHelper.getMimeMessage());
     }
 
-    public void signSuccessMailNotify(String message) throws MessagingException {
+    public void signMailNotify(String message) throws MessagingException {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
         messageHelper.setSubject("mogu auto clock.");
