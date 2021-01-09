@@ -3,7 +3,6 @@ package com.qianmua.util;
 import okhttp3.*;
 
 import java.io.IOException;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -22,8 +21,7 @@ public class NetworkApi {
             String requestContent,
             String url,
             String token,
-            final CallRequest callRequest) {
-
+            final CallRequestBack callRequestBack) {
 
         final RequestBody requestBody = RequestBody.create(mediaType, requestContent);
 
@@ -34,19 +32,18 @@ public class NetworkApi {
                 .addHeader("Authorization", token)
                 .build();
 
-        sHttpClient.newCall(request).enqueue(new Callback() {
+        Callback callback = new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 System.out.println(" callback err : " + e.getMessage());
             }
-
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-//                Objects.requireNonNull(response.body());
                 ResponseBody body = Optional.ofNullable(response.body()).orElse(null);
-                callRequest.success(body == null ? null : body.string() );
+                callRequestBack.success(body == null ? null : body.string());
             }
-        });
+        };
+        sHttpClient.newCall(request).enqueue(callback);
     }
 
 

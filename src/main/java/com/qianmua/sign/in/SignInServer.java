@@ -1,5 +1,7 @@
 package com.qianmua.sign.in;
 
+import com.qianmua.annotation.Log;
+import com.qianmua.annotation.MailNotify;
 import com.qianmua.constant.AutoManageType;
 import com.qianmua.constant.RandomChickenSoup;
 import com.qianmua.mail.ExecuteSendMailFunction;
@@ -9,6 +11,7 @@ import com.qianmua.pojo.vo.AutoWriteDayInfo;
 import com.qianmua.pojo.vo.AutoWriteWeekInfo;
 import com.qianmua.pojo.vo.LoginVo;
 import com.qianmua.pojo.vo.SinginVo;
+import com.qianmua.util.CallRequestBack;
 import com.qianmua.util.DateFormatUtils;
 import com.qianmua.util.JsonUtils;
 import com.qianmua.util.NetworkApi;
@@ -16,16 +19,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.mail.MessagingException;
-import java.text.SimpleDateFormat;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Random;
 
 /**
@@ -48,42 +46,32 @@ public class SignInServer {
     /**
      * sign with
      */
+    @Log(needLog = true)
+    @MailNotify
     public synchronized void doSign(LoginVo login, final SinginVo singin) {
         String loginurl = uri + "/session/user/v1/login";
-
-        System.out.println( LocalDateTime.now() +"   开始登录 登录信息为：" + login);
         NetworkApi.request(JsonUtils.serialize(login),
                 loginurl,
                 "",
                 json -> {
+                    String token = checkToken(json);
+                    checkPlanId(singin );
+                    doAutoSign(singin , token );
+                    autoWrite(singin, token );
+                });
+    }
 
-            System.out.println(LocalDateTime.now() + "  登录成功：" + json);
-            User parse = JsonUtils.parse(json, User.class);
-
-            if (parse == null)
-                return;
-
-            String token = parse.getData().getToken();
-
-            // 这里后面在处理先留着， 只做简单的mail功能
-            ExecuteSendMailFunction sendMailFunction = (msg) -> {
-                mailServer.signMailNotify(msg);
-            };
-
-            checkPlanId(singin);
-
-            doAutoSign(singin , token);
-
-            autoWrite(singin, token);
-
-            // mail通知
-            String s = "签到成功， planId为 :" + singin.getPlanId() + "如果PlanId为空请联系管理员重新签到";
-            try {
-                sendMailFunction.execute(s);
-            } catch (MessagingException e) {
-                e.printStackTrace();
-            }
-        });
+    /**
+     * 获取token
+     * 可能会抛出用户token 获取异常
+     * @param json json 数据
+     * @return token
+     */
+    private String checkToken(String json) {
+        User parse = JsonUtils.parse(json, User.class);
+        return Optional.ofNullable(parse)
+                .map(var1 -> var1.getData().getToken())
+                .orElseThrow( () -> new RuntimeException("user token with null."));
     }
 
 
@@ -131,8 +119,12 @@ public class SignInServer {
                 .setReportType(type)
                 .setTitle(AutoManageType.AUTO_TITLE);
 
-        NetworkApi.request(JsonUtils.serialize(info), autoWriteUrl, token,
-                json1 -> System.out.println( LocalDate.now() + " 自动月报写入 : "  + json1));
+        NetworkApi.request(
+                JsonUtils.serialize(info),
+                autoWriteUrl,
+                token,
+                json1 -> { });
+
     }
 
     /**
@@ -157,8 +149,11 @@ public class SignInServer {
                 .setEndTime(DateFormatUtils.getEndDateTime())
                 .setWeeks(builder.toString());
 
-        NetworkApi.request(JsonUtils.serialize(weekInfo), url, token,
-                json1 -> System.out.println(LocalDate.now() +  " 自动周报写入 : "  + json1));
+        NetworkApi.request(JsonUtils.serialize(weekInfo),
+                url,
+                token,
+                json1 -> { });
+
 
     }
 
@@ -167,11 +162,11 @@ public class SignInServer {
      * @param singin 信息实体
      * @param token token
      */
-    private String doAutoSign(SinginVo singin , String token) {
+    private String doAutoSign(SinginVo singin, String token) {
         String sign = uri + "/attendence/clock/v1/save";
 
         NetworkApi.request(JsonUtils.serialize(singin), sign, token,
-                json1 -> System.out.println( LocalDateTime.now() + "  签到成功：" + json1));
+                json1 -> {  });
 
         return singin.getPlanId();
     }

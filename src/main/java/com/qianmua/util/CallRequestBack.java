@@ -7,7 +7,6 @@ package com.qianmua.util;
  * @description : 使用函数式接口
  */
 @FunctionalInterface
-public interface CallRequest {
+public interface CallRequestBack {
     void success(String json);
-
 }

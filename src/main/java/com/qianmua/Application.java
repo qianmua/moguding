@@ -8,7 +8,6 @@ import tk.mybatis.spring.annotation.MapperScan;
 
 @SpringBootApplication
 @MapperScan(basePackages = {"com.qianmua.dao"})
-
 public class Application {
         public static void main(String[] args) {
 
