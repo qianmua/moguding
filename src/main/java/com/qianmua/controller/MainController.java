@@ -9,7 +9,7 @@ import com.qianmua.pojo.Login;
 import com.qianmua.pojo.vo.LoginVo;
 import com.qianmua.pojo.vo.SinginVo;
 import com.qianmua.sign.in.SignServer;
-import com.qianmua.service.Userservice;
+import com.qianmua.service.UserService;
 import com.qianmua.sign.in.SignInServer;
 import org.quartz.SchedulerException;
 import org.springframework.beans.BeanUtils;
@@ -28,11 +28,11 @@ public class MainController {
     public final SchedulerManager myScheduler;
     private final LoginMapper loginMapper;
     private final SignInServer signInServer;
-    private final Userservice userservice;
+    private final UserService userservice;
     private final SignServer signServer;
 
     public MainController(SchedulerManager myScheduler, LoginMapper loginMapper,
-                          SignInServer signInServer, Userservice userservice,
+                          SignInServer signInServer, UserService userservice,
                           SignServer signServer) {
 
         this.myScheduler = myScheduler;

@@ -60,6 +60,11 @@
             <artifactId>hutool-all</artifactId>
             <version>5.3.5</version>
         </dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>13.0</version>
+        </dependency>
 
     </dependencies>
     <build>

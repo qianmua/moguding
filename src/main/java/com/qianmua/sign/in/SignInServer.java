@@ -171,12 +171,12 @@ public class SignInServer {
         return singin.getPlanId();
     }
 
+    /*
+    鸡汤 - -！
+     */
     private String getRandomChickenSoup(){
         int length = RandomChickenSoup.CHICKEN_SOUP.length;
-
         int random = new Random().nextInt(length);
-
-        System.out.println(random);
         return RandomChickenSoup.CHICKEN_SOUP[random];
 
     }

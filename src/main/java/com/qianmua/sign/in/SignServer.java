@@ -8,8 +8,10 @@ import com.qianmua.pojo.PlanStu;
 import com.qianmua.pojo.User;
 import com.qianmua.pojo.vo.LoginVo;
 import com.qianmua.pojo.vo.SinginVo;
+import com.qianmua.service.UserService;
 import com.qianmua.util.JsonUtils;
 import com.qianmua.util.NetworkApi;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,44 +31,52 @@ import java.util.concurrent.TimeUnit;
 public class SignServer implements AutoRunningJob {
 
     @Autowired
-    private LoginMapper loginMapper;
+    private UserService userService;
 
     private static final String uri = "https://api.moguding.net:9000";
 
     /**
      * 签到
-     * 结构很乱
      * @return status
      */
     public String sign() throws InterruptedException {
-        List<Login> logins = loginMapper.selectAll();
-        for (Login login : logins) {
+        List<Login> logins = userService.queryAllUserInfo();
 
-            LoginVo loginVo = new LoginVo();
-            BeanUtils.copyProperties(login, loginVo);
-            loginVo.setLoginType(login.getLogintype());
+        if (logins == null || logins.isEmpty()) {
+            return "FAIL";
+        }
 
-            SinginVo singinVo = new SinginVo();
-            BeanUtils.copyProperties(login.getSingins(), singinVo);
-
-            // getPlantID
-            String plan = this.getPlan(loginVo);
-            singinVo.setPlanId(plan);
-
-            // 签到状态转换
-            singinVo.setType( Calendar.getInstance().get(Calendar.HOUR_OF_DAY) <= 12 ?
-                    AutoManageType.AUTO_START_MARK : AutoManageType.AUTO_END_MARK);
-
-            // 签到
+        logins.forEach(lgs -> {
+            LoginVo loginVo = getLoginVo(lgs);
+            SinginVo singinVo = getSignVo(lgs, loginVo);
             new SignInServer().doSign(loginVo, singinVo);
-
             try {
                 TimeUnit.MILLISECONDS.sleep(20);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }
+        });
+
         return "SUCCESS";
+    }
+
+    @NotNull
+    private SinginVo getSignVo(Login login, LoginVo loginVo) {
+        SinginVo singinVo = new SinginVo();
+        BeanUtils.copyProperties(login.getSingins(), singinVo);
+        singinVo.setPlanId(this.getPlan(loginVo));
+        // 签到状态转换
+        singinVo.setType( Calendar.getInstance().get(Calendar.HOUR_OF_DAY) <= 12 ?
+                AutoManageType.AUTO_START_MARK : AutoManageType.AUTO_END_MARK);
+        return singinVo;
+    }
+
+    @NotNull
+    private LoginVo getLoginVo(Login login) {
+        LoginVo loginVo = new LoginVo();
+        BeanUtils.copyProperties(login, loginVo);
+        loginVo.setLoginType(login.getLogintype());
+        return loginVo;
     }
 
     /**
@@ -90,7 +100,7 @@ public class SignServer implements AutoRunningJob {
 
         // 请在这里即时处理中断
         try {
-            TimeUnit.SECONDS.sleep(5);
+            TimeUnit.SECONDS.sleep(3);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

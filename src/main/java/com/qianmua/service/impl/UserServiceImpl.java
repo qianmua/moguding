@@ -6,16 +6,17 @@ import com.qianmua.pojo.Login;
 import com.qianmua.pojo.Singin;
 import com.qianmua.pojo.vo.LoginVo;
 import com.qianmua.sign.in.SignServer;
-import com.qianmua.service.Userservice;
+import com.qianmua.service.UserService;
 import com.qianmua.util.PublicUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class UserserviceImpl implements Userservice {
+public class UserServiceImpl implements UserService {
 
     @Autowired
     private LoginMapper loginMapper;
@@ -27,27 +28,17 @@ public class UserserviceImpl implements Userservice {
     private SignServer signServer;
 
     @Override
-    public List<Login> getLoginInfo() {
-
+    public List<Login> queryAllUserInfo() {
         List<Login> logins = loginMapper.selectAll();
-        if (logins == null)
-            throw new ArrayIndexOutOfBoundsException();
+        if (logins == null || logins.isEmpty())
+            return new ArrayList<>();
         return logins;
     }
 
-    /**
-     * 这里结构很乱
-     * 不太好重构
-     * @param login userInfo
-     */
     @Override
     public void addUser(Login login) {
         // get planId
-        LoginVo loginvo = new LoginVo();
-        BeanUtils.copyProperties(login,loginvo);
-        loginvo.setLoginType(login.getLogintype());
-
-        String plan = signServer.getPlan(loginvo);
+        //String plan = getPlanFromDb(login);
 
         // save to login table
         String replace = PublicUtils.genUUID();
@@ -58,10 +49,18 @@ public class UserserviceImpl implements Userservice {
         Singin singins = login.getSingins();
         String uuid = PublicUtils.genUUID();
         singins.setId(uuid);
-        singins.setPlanId(plan);
+        //singins.setPlanId(plan);
         singins.setLoginId(replace);
         singinMapper.insert(singins);
 
+    }
+
+    private String getPlanFromDb(Login login) {
+        LoginVo loginvo = new LoginVo();
+        BeanUtils.copyProperties(login,loginvo);
+        loginvo.setLoginType(login.getLogintype());
+        String plan = signServer.getPlan(loginvo);
+        return plan;
     }
 
 
