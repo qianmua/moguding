@@ -1,6 +1,5 @@
 package com.qianmua.mail;
 
-import javax.mail.MessagingException;
 
 /**
  * @author jinchao.hu
@@ -11,6 +10,6 @@ import javax.mail.MessagingException;
 @FunctionalInterface
 public interface ExecuteSendMailFunction {
 
-    void execute(String message) throws MessagingException;
+    boolean execute();
 
 }

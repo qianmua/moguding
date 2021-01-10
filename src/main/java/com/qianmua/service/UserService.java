@@ -3,7 +3,12 @@ package com.qianmua.service;
 import com.qianmua.pojo.Login;
 
 import java.util.List;
-
+/**
+ * @author jinchao.hu
+ * @version 1.0
+ * @date 2021/1/10  12:10
+ * @description :
+ */
 public interface UserService {
 
     /**

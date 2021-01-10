@@ -34,7 +34,6 @@ public class SignServer implements AutoRunningJob {
     private UserService userService;
 
     private static final String uri = "https://api.moguding.net:9000";
-
     /**
      * 签到
      * @return status
@@ -43,7 +42,7 @@ public class SignServer implements AutoRunningJob {
         List<Login> logins = userService.queryAllUserInfo();
 
         if (logins == null || logins.isEmpty()) {
-            return "FAIL";
+            return SignStatus.FAIL.symbol;
         }
 
         logins.forEach(lgs -> {
@@ -57,26 +56,7 @@ public class SignServer implements AutoRunningJob {
             }
         });
 
-        return "SUCCESS";
-    }
-
-    @NotNull
-    private SinginVo getSignVo(Login login, LoginVo loginVo) {
-        SinginVo singinVo = new SinginVo();
-        BeanUtils.copyProperties(login.getSingins(), singinVo);
-        singinVo.setPlanId(this.getPlan(loginVo));
-        // 签到状态转换
-        singinVo.setType( Calendar.getInstance().get(Calendar.HOUR_OF_DAY) <= 12 ?
-                AutoManageType.AUTO_START_MARK : AutoManageType.AUTO_END_MARK);
-        return singinVo;
-    }
-
-    @NotNull
-    private LoginVo getLoginVo(Login login) {
-        LoginVo loginVo = new LoginVo();
-        BeanUtils.copyProperties(login, loginVo);
-        loginVo.setLoginType(login.getLogintype());
-        return loginVo;
+        return SignStatus.SUCCESS.symbol;
     }
 
     /**
@@ -127,6 +107,36 @@ public class SignServer implements AutoRunningJob {
         }
     }
 
+    private enum SignStatus{
+        SUCCESS("SUCCESS") , FAIL("FAIL") , RUNNING("RUNNING");
+
+        private final String symbol;
+
+        SignStatus(String symbol){
+            this.symbol = symbol;
+        }
+
+
+    }
+
+    @NotNull
+    private SinginVo getSignVo(Login login, LoginVo loginVo) {
+        SinginVo singinVo = new SinginVo();
+        BeanUtils.copyProperties(login.getSingins(), singinVo);
+        singinVo.setPlanId(this.getPlan(loginVo));
+        // 签到状态转换
+        singinVo.setType( Calendar.getInstance().get(Calendar.HOUR_OF_DAY) <= 12 ?
+                AutoManageType.AUTO_START_MARK : AutoManageType.AUTO_END_MARK);
+        return singinVo;
+    }
+
+    @NotNull
+    private LoginVo getLoginVo(Login login) {
+        LoginVo loginVo = new LoginVo();
+        BeanUtils.copyProperties(login, loginVo);
+        loginVo.setLoginType(login.getLogintype());
+        return loginVo;
+    }
 
     /**
      * 获取planId 可能返回空

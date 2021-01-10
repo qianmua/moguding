@@ -48,14 +48,23 @@ public class MailServer {
         javaMailSender.send(messageHelper.getMimeMessage());
     }
 
-    public void signMailNotify(String message) throws MessagingException {
+    /**
+     * 通知 签到成功
+     * @param message 消息
+     * @throws MessagingException 消息发送异常（网络， 格式 ）
+     */
+    public void signMailNotify(String message) {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
-        messageHelper.setSubject("mogu auto clock.");
-        messageHelper.setFrom(sendFrom);
-        messageHelper.setTo(sendTo);
-        messageHelper.setText("<h1>" + message + "</h1>", true);
-        javaMailSender.send(messageHelper.getMimeMessage());
+        try {
+            messageHelper.setSubject("mogu auto clock.");
+            messageHelper.setFrom(sendFrom);
+            messageHelper.setTo(sendTo);
+            messageHelper.setText("<h1>" + message + "</h1>", true);
+            javaMailSender.send(messageHelper.getMimeMessage());
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
     }
 
 

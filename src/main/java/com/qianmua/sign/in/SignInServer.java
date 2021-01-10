@@ -11,20 +11,15 @@ import com.qianmua.pojo.vo.AutoWriteDayInfo;
 import com.qianmua.pojo.vo.AutoWriteWeekInfo;
 import com.qianmua.pojo.vo.LoginVo;
 import com.qianmua.pojo.vo.SinginVo;
-import com.qianmua.util.CallRequestBack;
 import com.qianmua.util.DateFormatUtils;
 import com.qianmua.util.JsonUtils;
 import com.qianmua.util.NetworkApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.mail.MessagingException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 /**
  * @author jinchao.hu
@@ -56,62 +51,70 @@ public class SignInServer {
                 json -> {
                     String token = checkToken(json);
                     checkPlanId(singin );
-                    doAutoSign(singin , token );
-                    autoWrite(singin, token );
+
+                    execute(singin, token);
                 });
     }
 
-    /**
-     * 获取token
-     * 可能会抛出用户token 获取异常
-     * @param json json 数据
-     * @return token
-     */
-    private String checkToken(String json) {
-        User parse = JsonUtils.parse(json, User.class);
-        return Optional.ofNullable(parse)
-                .map(var1 -> var1.getData().getToken())
-                .orElseThrow( () -> new RuntimeException("user token with null."));
+    private void execute(SinginVo singin, String token) {
+        doAutoSign(singin, token, status -> {
+            if (!status) {
+                return ;
+            }
+            mailServer.signMailNotify("this member planId is :" + singin.getPlanId() + ",\t if not null then sign success.");
+        });
+
+        autoWrite(singin, token, status -> {
+            if (!status) {
+                return ;
+            }
+            mailServer.signMailNotify("this member planId is :" + singin.getPlanId() + ",\t if not null then sign success.");
+        });
+
     }
 
+
+    /**
+     * 自动签到
+     * @param singin 信息实体
+     * @param token token
+     */
+    private void doAutoSign(SinginVo singin, String token , Consumer<Boolean> booleanConsumer) {
+        String sign = uri + "/attendence/clock/v1/save";
+        NetworkApi.request(JsonUtils.serialize(singin), sign, token,
+                json1 -> { mailServer.signMailNotify("this member planId is :" + singin.getPlanId() + ",\t if not null then sign success."); });
+    }
 
     /**
      * 自动日报，周报，月报
      * @param singin 信息实体
      * @param token token
      */
-    private void autoWrite(SinginVo singin, String token) {
+    private void autoWrite(SinginVo singin, String token , Consumer<Boolean> consumer ) {
         String autoWriteUrl = uri + "/practice/paper/v1/save";
 
-        // 日
-        if (DateFormatUtils.isDayLast()){
-            System.out.println(LocalDateTime.now() + " 日报:");
-            doAutoWriteDay(singin, token, autoWriteUrl , AutoManageType.AUTO__WRITE_DAY);
-        }else
-            System.out.println(LocalDateTime.now() + " 日报条件不足");
+        List<ExecuteSendMailFunction> list = Collections.synchronizedList(
+                new ArrayList<ExecuteSendMailFunction>(){{
+                    add( () -> doAutoWriteDay(singin, token, autoWriteUrl , AutoManageType.AUTO__WRITE_DAY));
+                    add( () -> doAutoWriteWeek(singin , token , autoWriteUrl));
+                    add( () -> doAutoWriteDay(singin, token, autoWriteUrl , AutoManageType.AUTO__WRITE_MONTH));
+                }});
 
-        // 周
-        if (DateFormatUtils.isThisWeekSaturday()){
-            System.out.println(LocalDateTime.now() + " 周报：" );
-            doAutoWriteWeek(singin , token , autoWriteUrl);
-        }else
-            System.out.println(LocalDateTime.now() + " 周报条件不足");
-
-        // 月
-        if (DateFormatUtils.isThisMonthLast()){
-            System.out.println(LocalDateTime.now().getDayOfMonth() + " 月报: ");
-            doAutoWriteDay(singin, token, autoWriteUrl , AutoManageType.AUTO__WRITE_MONTH);
-        }else
-            System.out.println(LocalDateTime.now() + " 月报条件不足");
-
+        list.forEach(esmf ->
+                CompletableFuture
+                        .supplyAsync(esmf::execute)
+                        .thenApply(bool -> consumer )
+        );
     }
-
     /**
      * 自动日报
      */
-    private void doAutoWriteDay(SinginVo singin, String token, String autoWriteUrl ,String type) {
+    @Log(needLog = true)
+    private boolean doAutoWriteDay(SinginVo singin, String token, String autoWriteUrl ,String type) {
+        if (!DateFormatUtils.isDayLast() || DateFormatUtils.isThisMonthLast()){
+            return false;
+        }
         AutoWriteDayInfo info = new AutoWriteDayInfo();
-
         info.setAttachmentList(new ArrayList<>())
                 .setAttachments("")
                 .setContent(getRandomChickenSoup())
@@ -124,13 +127,20 @@ public class SignInServer {
                 autoWriteUrl,
                 token,
                 json1 -> { });
+        return true;
 
     }
 
     /**
      * 自动周报
      */
-    private void doAutoWriteWeek(SinginVo singinVo , String token , String url){
+    @Log(needLog = true)
+    private boolean doAutoWriteWeek(SinginVo singinVo , String token , String url){
+
+        if (!DateFormatUtils.isThisWeekSaturday()){
+            return false;
+        }
+
         AutoWriteWeekInfo weekInfo = new AutoWriteWeekInfo();
 
         // gen week
@@ -154,21 +164,7 @@ public class SignInServer {
                 token,
                 json1 -> { });
 
-
-    }
-
-    /**
-     * 自动签到
-     * @param singin 信息实体
-     * @param token token
-     */
-    private String doAutoSign(SinginVo singin, String token) {
-        String sign = uri + "/attendence/clock/v1/save";
-
-        NetworkApi.request(JsonUtils.serialize(singin), sign, token,
-                json1 -> {  });
-
-        return singin.getPlanId();
+        return true;
     }
 
     /*
@@ -181,7 +177,16 @@ public class SignInServer {
 
     }
 
+    private String checkToken(String json) {
+        User parse = JsonUtils.parse(json, User.class);
+        return Optional.ofNullable(parse)
+                .map(var1 -> var1.getData().getToken())
+                .orElseThrow( () -> new RuntimeException("user token with null."));
+    }
     private void checkPlanId(SinginVo singin) {
         Objects.requireNonNull(singin.getPlanId());
+    }
+
+    private void doNothing() {
     }
 }
