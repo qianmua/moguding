@@ -1,6 +1,6 @@
 package com.qianmua.sign.in;
 
-import com.qianmua.annotation.Log;
+import com.qianmua.annotation.LogNotify;
 import com.qianmua.annotation.MailNotify;
 import com.qianmua.constant.AutoManageType;
 import com.qianmua.constant.RandomChickenSoup;
@@ -41,7 +41,7 @@ public class SignInServer {
     /**
      * sign with
      */
-    @Log(needLog = true)
+    @LogNotify(needLog = true)
     @MailNotify
     public synchronized void doSign(LoginVo login, final SinginVo singin) {
         String loginurl = uri + "/session/user/v1/login";
@@ -109,7 +109,7 @@ public class SignInServer {
     /**
      * 自动日报
      */
-    @Log(needLog = true)
+    @LogNotify(needLog = true)
     private boolean doAutoWriteDay(SinginVo singin, String token, String autoWriteUrl ,String type) {
         if (!DateFormatUtils.isDayLast() || DateFormatUtils.isThisMonthLast()){
             return false;
@@ -134,7 +134,7 @@ public class SignInServer {
     /**
      * 自动周报
      */
-    @Log(needLog = true)
+    @LogNotify(needLog = true)
     private boolean doAutoWriteWeek(SinginVo singinVo , String token , String url){
 
         if (!DateFormatUtils.isThisWeekSaturday()){

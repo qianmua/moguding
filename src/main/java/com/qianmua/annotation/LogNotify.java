@@ -13,6 +13,6 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface Log {
+public @interface LogNotify {
     boolean needLog() default false;
 }
