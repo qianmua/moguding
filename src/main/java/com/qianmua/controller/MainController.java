@@ -14,32 +14,34 @@ import com.qianmua.sign.in.SignInServer;
 import org.quartz.SchedulerException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @Controller
 @RequestMapping("/mogu")
 public class MainController {
 
-    public final SchedulerManager myScheduler;
-    private final LoginMapper loginMapper;
-    private final SignInServer signInServer;
-    private final UserService userservice;
-    private final SignServer signServer;
+    public  final SchedulerManager  myScheduler;
+    private final LoginMapper       loginMapper;
+    private final SignInServer      signInServer;
+    private final UserService       userservice;
+    private final SignServer        signServer;
 
     public MainController(SchedulerManager myScheduler, LoginMapper loginMapper,
                           SignInServer signInServer, UserService userservice,
                           SignServer signServer) {
 
-        this.myScheduler = myScheduler;
-        this.loginMapper = loginMapper;
-        this.signInServer = signInServer;
-        this.userservice = userservice;
-        this.signServer = signServer;
+        this.myScheduler    = myScheduler;
+        this.loginMapper    = loginMapper;
+        this.signInServer   = signInServer;
+        this.userservice    = userservice;
+        this.signServer     = signServer;
+    }
+
+    private enum ExecuteStatus{
+        SUCCESS , FAIL
     }
 
     @RequestMapping(value = "/job/start", method = RequestMethod.GET)
@@ -87,16 +89,20 @@ public class MainController {
     }
 
     /**
+     * 定时任务执行失败时调用接口
+     * @param ids 用户号（学号）
+     * @return status
+     */
+    @GetMapping("/autoSign/list")
+    public String autoSign(List<String> ids){
+        // TODO 批量签到
+
+        return ExecuteStatus.SUCCESS.toString();
+    }
+
+    /**
      * 手动签到接口
-     *
-     * 自动签到
-     *
-     * 自动填写日报
-     *
-     * 周报
-     *
-     * 月报
-     *
+     * 签到, 日报 , 周报 , 月报
      */
     @ResponseBody
     @RequestMapping("autoSign")
@@ -112,6 +118,7 @@ public class MainController {
     @RequestMapping("/insert/member")
     @ResponseBody
     public String addMember(@RequestBody Login login) {
+        Objects.requireNonNull(login);
         userservice.addUser(login);
         return "insert success.";
     }

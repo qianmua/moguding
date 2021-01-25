@@ -13,6 +13,20 @@ public interface AutoManageType {
     String AUTO_TITLE = "工作";
 
     //type
+    public enum Type{
+        AUTO_DAILY("day") ,
+        AUTO_WEEKLY("week") ,
+        AUTO_MONTHLY("month");
+
+        private final String symbol;
+        Type(String symbol){
+            this.symbol = symbol;
+        }
+        public String getSymbol() {
+            return symbol;
+        }
+
+    }
     String AUTO__WRITE_DAY = "day";
     String AUTO__WRITE_WEEK = "week";
     String AUTO__WRITE_MONTH = "month";
