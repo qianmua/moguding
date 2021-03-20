@@ -40,14 +40,13 @@ public class MainController {
         this.signServer     = signServer;
     }
 
-    private enum ExecuteStatus{
+    private static enum ExecuteStatus{
         SUCCESS , FAIL
     }
 
-    @RequestMapping(value = "/job/start", method = RequestMethod.GET)
+    @GetMapping(value = "/job/start")
     @ResponseBody
     public String scheduleJob2() {
-        //"20 10 8,17 * * ?"/
         try {
             // //每五秒执行一次
             // 这里小心，会和数据库中的一起执行
@@ -64,7 +63,7 @@ public class MainController {
         return "启动定时器失败";
     }
 
-    @RequestMapping(value = "/job/end", method = RequestMethod.GET)
+    @GetMapping(value = "/job/end")
     @ResponseBody
     public String deleteScheduleJob2() {
         try {

@@ -11,13 +11,12 @@ import com.qianmua.pojo.vo.SinginVo;
 import com.qianmua.service.UserService;
 import com.qianmua.util.JsonUtils;
 import com.qianmua.util.NetworkApi;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -29,19 +28,25 @@ import java.util.concurrent.TimeUnit;
  * change by qianmu. date: 21/1/7
  */
 @Service
+@Slf4j
 public class SignServer implements AutoRunningJob {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+    private final SignInServer signInServer;
 
     @Value("${mogu.service.sign-uri}")
     private String uri;
+
+    public SignServer(UserService userService, SignInServer signInServer) {
+        this.userService = userService;
+        this.signInServer = signInServer;
+    }
 
     /**
      * 签到
      * @return status
      */
-    public String sign() throws InterruptedException {
+    public String sign() {
         List<Login> logins = userService.queryAllUserInfo();
 
         if (logins == null || logins.isEmpty()) {
@@ -51,9 +56,10 @@ public class SignServer implements AutoRunningJob {
         logins.forEach(lgs -> {
             LoginVo loginVo = getLoginVo(lgs);
             SinginVo singinVo = getSignVo(lgs, loginVo);
-            new SignInServer().doSign(loginVo, singinVo);
+            // 线程安全
+            signInServer.doSign(loginVo, singinVo);
             try {
-                TimeUnit.MILLISECONDS.sleep(20);
+                TimeUnit.MILLISECONDS.sleep(300);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -79,14 +85,6 @@ public class SignServer implements AutoRunningJob {
             token = parse.getData().getToken();
             this.doGetPlan(plan , token);
         });
-
-        // 请在这里即时处理中断
-        try {
-            TimeUnit.SECONDS.sleep(3);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
         return Optional
                 .ofNullable(plan[0])
                 .orElse(null);
@@ -97,15 +95,10 @@ public class SignServer implements AutoRunningJob {
      */
     @Override
     public void autoJob(){
-        System.out.println("===========================================================");
-        System.out.println("执行时间: " + LocalDateTime.now());
-        System.out.println("===========================================================");
-        try {
-            this.sign();
-        } catch (InterruptedException e) {
-            System.err.println("exception : " + e.getMessage());
-            e.printStackTrace();
-        }
+        log.info("===========================================================");
+        log.info("Execute Time: " + LocalDateTime.now());
+        log.info("===========================================================");
+        this.sign();
     }
 
     private enum SignStatus{

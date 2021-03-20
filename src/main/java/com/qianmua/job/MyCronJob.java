@@ -2,6 +2,7 @@ package com.qianmua.job;
 
 
 import com.qianmua.sign.in.SignServer;
+import org.jetbrains.annotations.NotNull;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ public class MyCronJob extends QuartzJobBean {
      * 晚班签到
      */
     @Override
-    protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+    protected void executeInternal(@NotNull JobExecutionContext jobExecutionContext) throws JobExecutionException {
         signServer.autoJob();
     }
 

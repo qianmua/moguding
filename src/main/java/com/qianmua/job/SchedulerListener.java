@@ -31,11 +31,7 @@ public class SchedulerListener implements JobListener {
      */
     @Override
     public void jobExecutionVetoed(JobExecutionContext context) {
-        System.out.println("任务被拒绝");
-        // to log
-        // 因为在linux做了输出重定向 这里可以直接输出
-
-
+        System.out.println("reject job , info :" + context.getJobDetail().toString());
     }
 
     /**
