@@ -44,3 +44,6 @@ mail:
   send-mail-from: 2174521520@qq.com
   send-mail-to: 2674521520@qq.com
   mogu-send-title: 蘑菇钉自动签到
+
+mogu.service:
+  sign-uri: https://api.moguding.net:9000

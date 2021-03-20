@@ -14,6 +14,7 @@ import com.qianmua.util.NetworkApi;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -33,7 +34,9 @@ public class SignServer implements AutoRunningJob {
     @Autowired
     private UserService userService;
 
-    private static final String uri = "https://api.moguding.net:9000";
+    @Value("${mogu.service.sign-uri}")
+    private String uri;
+
     /**
      * 签到
      * @return status
@@ -60,9 +63,8 @@ public class SignServer implements AutoRunningJob {
     }
 
     /**
-     *     // 得到PlanId
-     *     login
-     * @return ID
+     *   得到PlanId
+     * @return plan string
      */
     public String getPlan(LoginVo login) {
 
@@ -88,7 +90,6 @@ public class SignServer implements AutoRunningJob {
         return Optional
                 .ofNullable(plan[0])
                 .orElse(null);
-//        return plan[0];
     }
 
     /**
@@ -116,15 +117,18 @@ public class SignServer implements AutoRunningJob {
             this.symbol = symbol;
         }
 
-
     }
 
     @NotNull
     private SinginVo getSignVo(Login login, LoginVo loginVo) {
         SinginVo singinVo = new SinginVo();
         BeanUtils.copyProperties(login.getSingins(), singinVo);
-        singinVo.setPlanId(this.getPlan(loginVo));
-        // 签到状态转换
+        String plan = getPlan(loginVo);
+        if (plan == null){
+            throw new RuntimeException("null plan id.");
+        }
+        singinVo.setPlanId(plan);
+
         singinVo.setType( Calendar.getInstance().get(Calendar.HOUR_OF_DAY) <= 12 ?
                 AutoManageType.AUTO_START_MARK : AutoManageType.AUTO_END_MARK);
         return singinVo;

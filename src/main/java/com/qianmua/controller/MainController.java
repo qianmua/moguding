@@ -157,14 +157,14 @@ public class MainController {
         return "添加成功";
     }
 
-    @RequestMapping("planid")
     @Deprecated
+    @RequestMapping("planid")
+    @ResponseBody
     public  String getPlanId(@RequestBody Login login) throws InterruptedException {
         LoginVo loginvo = new LoginVo();
         BeanUtils.copyProperties(login,loginvo);
         loginvo.setLoginType(login.getLogintype());
-        String plan = signServer.getPlan(loginvo);
-        return  plan;
+        return signServer.getPlan(loginvo);
     }
 
 }

@@ -1,5 +1,6 @@
 package com.qianmua.sign.in;
 
+import com.google.common.collect.ImmutableList;
 import com.qianmua.annotation.LogNotify;
 import com.qianmua.annotation.MailNotify;
 import com.qianmua.constant.AutoManageType;
@@ -14,11 +15,14 @@ import com.qianmua.pojo.vo.SinginVo;
 import com.qianmua.util.DateFormatUtils;
 import com.qianmua.util.JsonUtils;
 import com.qianmua.util.NetworkApi;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Consumer;
 
 /**
@@ -33,10 +37,8 @@ public class SignInServer {
     @Autowired
     private MailServer mailServer;
 
-    /**
-     * BASE API
-     */
-    private static final String uri = "https://api.moguding.net:9000";
+    @Value("${mogu.service.sign-uri}")
+    private String uri;
 
     /**
      * sign with
@@ -51,26 +53,30 @@ public class SignInServer {
                 json -> {
                     String token = checkToken(json);
                     checkPlanId(singin );
-
                     execute(singin, token);
                 });
     }
 
     private void execute(SinginVo singin, String token) {
         doAutoSign(singin, token, status -> {
-            if (!status) {
-                return ;
+            if (status!= null && status) {
+                mailServer.signMailNotify(builderNotifyMsg(singin));
             }
-            mailServer.signMailNotify("this member planId is :" + singin.getPlanId() + ",\t if not null then sign success.");
         });
 
         autoWrite(singin, token, status -> {
-            if (!status) {
-                return ;
+            if (status!= null && status) {
+                mailServer.signMailNotify(builderNotifyMsg(singin));
             }
-            mailServer.signMailNotify("this member planId is :" + singin.getPlanId() + ",\t if not null then sign success.");
         });
+    }
 
+    @NotNull
+    private String builderNotifyMsg(SinginVo singin) {
+        return new StringBuilder()
+                .append("this member planId is :")
+                .append(singin.getPlanId())
+                .append(",\t if not null then sign success.").toString();
     }
 
 
@@ -84,9 +90,7 @@ public class SignInServer {
         NetworkApi.request(JsonUtils.serialize(singin), sign, token,
                 json1 ->
                         mailServer.signMailNotify(
-                                "this member planId is :"
-                                        + singin.getPlanId()
-                                        + ",\t if not null then sign success."));
+                                builderNotifyMsg(singin)));
     }
 
     /**
@@ -98,11 +102,12 @@ public class SignInServer {
         String autoWriteUrl = uri + "/practice/paper/v1/save";
 
         List<ExecuteSendMailFunction> list = Collections.synchronizedList(
-                new ArrayList<ExecuteSendMailFunction>(){{
-                    add( () -> doAutoWriteDay(singin, token, autoWriteUrl , AutoManageType.AUTO__WRITE_DAY));
-                    add( () -> doAutoWriteWeek(singin , token , autoWriteUrl));
-                    add( () -> doAutoWriteDay(singin, token, autoWriteUrl , AutoManageType.AUTO__WRITE_MONTH));
-                }});
+                ImmutableList.<ExecuteSendMailFunction>builderWithExpectedSize(3)
+                        .add(() -> doAutoWriteDay(singin, token, autoWriteUrl, AutoManageType.AUTO__WRITE_DAY))
+                        .add(() -> doAutoWriteWeek(singin, token, autoWriteUrl))
+                        .add(() -> doAutoWriteDay(singin, token, autoWriteUrl, AutoManageType.AUTO__WRITE_MONTH))
+                        .build()
+        );
 
         list.forEach(esmf ->
                 CompletableFuture
@@ -171,14 +176,12 @@ public class SignInServer {
         return true;
     }
 
-    /*
+    /**
     鸡汤 - -！
      */
     private String getRandomChickenSoup(){
-        int length = RandomChickenSoup.CHICKEN_SOUP.length;
-        int random = new Random().nextInt(length);
-        return RandomChickenSoup.CHICKEN_SOUP[random];
-
+        return RandomChickenSoup.CHICKEN_SOUP[
+                ThreadLocalRandom.current().nextInt(RandomChickenSoup.CHICKEN_SOUP.length)];
     }
 
     private String checkToken(String json) {
@@ -187,10 +190,15 @@ public class SignInServer {
                 .map(var1 -> var1.getData().getToken())
                 .orElseThrow( () -> new RuntimeException("user token with null."));
     }
+
     private void checkPlanId(SinginVo singin) {
         Objects.requireNonNull(singin.getPlanId());
     }
 
+    /**
+     * 回调空调用，没有实际意义
+     */
     private void doNothing() {
+        // Do nothing because return back .
     }
 }
