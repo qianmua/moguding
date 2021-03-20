@@ -82,7 +82,11 @@ public class SignInServer {
     private void doAutoSign(SinginVo singin, String token , Consumer<Boolean> booleanConsumer) {
         String sign = uri + "/attendence/clock/v1/save";
         NetworkApi.request(JsonUtils.serialize(singin), sign, token,
-                json1 -> { mailServer.signMailNotify("this member planId is :" + singin.getPlanId() + ",\t if not null then sign success."); });
+                json1 ->
+                        mailServer.signMailNotify(
+                                "this member planId is :"
+                                        + singin.getPlanId()
+                                        + ",\t if not null then sign success."));
     }
 
     /**

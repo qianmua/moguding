@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class LogPrint {
 
-    @Pointcut("execution(* com.qianmua.controller.*(..))")
+    @Pointcut("execution(* com.qianmua.service..*(..))")
     public void asp(){}
 
 
@@ -31,7 +31,9 @@ public class LogPrint {
     }
 
     @Around("asp() && @annotation(log)")
-    public Object doAround(ProceedingJoinPoint joinPoint , LogNotify log){
+    public Object doAround(ProceedingJoinPoint joinPoint , LogNotify log) throws Throwable {
+
+        joinPoint.proceed();
 
         return null;
 
