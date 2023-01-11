@@ -8,7 +8,7 @@ import com.qianmua.job.SchedulerManager;
 import com.qianmua.pojo.Login;
 import com.qianmua.pojo.vo.LoginVo;
 import com.qianmua.pojo.vo.SinginVo;
-import com.qianmua.sign.in.SignServer;
+import com.qianmua.sign.in.HandleSign;
 import com.qianmua.service.UserService;
 import com.qianmua.sign.in.SignInServer;
 import org.quartz.SchedulerException;
@@ -19,6 +19,19 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * description：
+ * <p>
+ * <p>
+ * change history:
+ * date                      defect#    person       comments
+ * -------------------------------------------------------------
+ * 2023/1/10 17:43          ********   jinchao.hu    create file.
+ *
+ * @author jinchao.hu
+ * @date 2023/1/10 17:43
+ * @since JDK1.8
+ */
 @Controller
 @RequestMapping("/mogu")
 public class MainController {
@@ -27,17 +40,17 @@ public class MainController {
     private final LoginMapper       loginMapper;
     private final SignInServer      signInServer;
     private final UserService       userservice;
-    private final SignServer        signServer;
+    private final HandleSign        handleSign;
 
     public MainController(SchedulerManager myScheduler, LoginMapper loginMapper,
                           SignInServer signInServer, UserService userservice,
-                          SignServer signServer) {
+                          HandleSign handleSign) {
 
         this.myScheduler    = myScheduler;
         this.loginMapper    = loginMapper;
         this.signInServer   = signInServer;
         this.userservice    = userservice;
-        this.signServer     = signServer;
+        this.handleSign     = handleSign;
     }
 
     private static enum ExecuteStatus{
@@ -106,7 +119,7 @@ public class MainController {
     @ResponseBody
     @RequestMapping("autoSign")
     public String sign() throws InterruptedException {
-        return signServer.sign();
+        return handleSign.sign();
     }
 
 
@@ -163,7 +176,7 @@ public class MainController {
         LoginVo loginvo = new LoginVo();
         BeanUtils.copyProperties(login,loginvo);
         loginvo.setLoginType(login.getLogintype());
-        return signServer.getPlan(loginvo);
+        return handleSign.getPlan(loginvo);
     }
 
 }

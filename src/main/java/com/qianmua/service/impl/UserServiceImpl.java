@@ -5,7 +5,7 @@ import com.qianmua.dao.SinginMapper;
 import com.qianmua.pojo.Login;
 import com.qianmua.pojo.Singin;
 import com.qianmua.pojo.vo.LoginVo;
-import com.qianmua.sign.in.SignServer;
+import com.qianmua.sign.in.HandleSign;
 import com.qianmua.service.UserService;
 import com.qianmua.util.PublicUtils;
 import org.springframework.beans.BeanUtils;
@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
     private SinginMapper singinMapper;
 
     @Autowired
-    private SignServer signServer;
+    private HandleSign handleSign;
 
     @Override
     public List<Login> queryAllUserInfo() {
@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
         LoginVo loginvo = new LoginVo();
         BeanUtils.copyProperties(login,loginvo);
         loginvo.setLoginType(login.getLogintype());
-        String plan = signServer.getPlan(loginvo);
+        String plan = handleSign.getPlan(loginvo);
         return plan;
     }
 

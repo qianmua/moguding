@@ -1,6 +1,6 @@
 package com.qianmua.job;
 
-import com.qianmua.sign.in.SignServer;
+import com.qianmua.sign.in.HandleSign;
 import org.jetbrains.annotations.NotNull;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -10,14 +10,14 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 public class MyJob extends QuartzJobBean {
 
     @Autowired
-    private SignServer signServer;
+    private HandleSign handleSign;
 
     /**
      * 早班 签到
      */
     @Override
     protected void executeInternal(@NotNull JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        signServer.autoJob();
+        handleSign.autoJob();
     }
 
 }

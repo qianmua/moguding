@@ -1,5 +1,7 @@
 package com.qianmua.util;
 
+import com.qianmua.constant.Constant;
+
 import java.util.UUID;
 
 /**
@@ -10,6 +12,14 @@ import java.util.UUID;
  */
 public final class PublicUtils {
 
+    private PublicUtils() {
+        throw new RuntimeException(Constant.A01);
+    }
+
+    /**
+     * gen uuid
+     * @return format uuid
+     */
     public static final String genUUID(){
         return UUID.randomUUID().toString().replace("-" , "");
     }

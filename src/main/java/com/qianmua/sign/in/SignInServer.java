@@ -137,7 +137,6 @@ public class SignInServer {
                 token,
                 json1 -> { });
         return true;
-
     }
 
     /**

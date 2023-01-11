@@ -1,7 +1,7 @@
 package com.qianmua.sign.in;
 
 import com.qianmua.constant.AutoManageType;
-import com.qianmua.dao.LoginMapper;
+import com.qianmua.constant.SignStatusEnum;
 import com.qianmua.job.AutoRunningJob;
 import com.qianmua.pojo.Login;
 import com.qianmua.pojo.PlanStu;
@@ -22,14 +22,21 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @author 宋LS
- * @version 1.0
- * @date 2020/9/6 16:31
- * change by qianmu. date: 21/1/7
+ * description：
+ * <p>
+ * <p>
+ * change history:
+ * date                      defect#    person       comments
+ * -------------------------------------------------------------
+ * 2023/1/10 17:43          ********   jinchao.hu    create file.
+ *
+ * @author jinchao.hu
+ * @date 2023/1/10 17:43
+ * @since JDK1.8
  */
 @Service
 @Slf4j
-public class SignServer implements AutoRunningJob {
+public class HandleSign implements AutoRunningJob {
 
     private final UserService userService;
     private final SignInServer signInServer;
@@ -37,7 +44,7 @@ public class SignServer implements AutoRunningJob {
     @Value("${mogu.service.sign-uri}")
     private String uri;
 
-    public SignServer(UserService userService, SignInServer signInServer) {
+    public HandleSign(UserService userService, SignInServer signInServer) {
         this.userService = userService;
         this.signInServer = signInServer;
     }
@@ -50,7 +57,7 @@ public class SignServer implements AutoRunningJob {
         List<Login> logins = userService.queryAllUserInfo();
 
         if (logins == null || logins.isEmpty()) {
-            return SignStatus.FAIL.symbol;
+            return SignStatusEnum.FAIL.getSymbol();
         }
 
         logins.forEach(lgs -> {
@@ -65,7 +72,7 @@ public class SignServer implements AutoRunningJob {
             }
         });
 
-        return SignStatus.SUCCESS.symbol;
+        return SignStatusEnum.SUCCESS.getSymbol();
     }
 
     /**
@@ -99,17 +106,6 @@ public class SignServer implements AutoRunningJob {
         log.info("Execute Time: " + LocalDateTime.now());
         log.info("===========================================================");
         this.sign();
-    }
-
-    private enum SignStatus{
-        SUCCESS("SUCCESS") , FAIL("FAIL") , RUNNING("RUNNING");
-
-        private final String symbol;
-
-        SignStatus(String symbol){
-            this.symbol = symbol;
-        }
-
     }
 
     @NotNull

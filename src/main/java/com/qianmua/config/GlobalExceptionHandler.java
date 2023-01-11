@@ -25,6 +25,7 @@ import javax.mail.MessagingException;
  * @date 2019年9月12日
  */
 @ControllerAdvice
+@Deprecated
 public class GlobalExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
@@ -39,7 +40,7 @@ public class GlobalExceptionHandler {
      * 其它全局异常
      *
      * @param e 异常
-     * @return com.cbpm.crrc.logicmodel.ResultMsg
+     * @return
      * @author noel
      * @date 2020/5/20
      * version 1.0
