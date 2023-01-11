@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 /**
  * description：
@@ -65,11 +64,6 @@ public class HandleSign implements AutoRunningJob {
             SinginVo singinVo = getSignVo(lgs, loginVo);
             // 线程安全
             signInServer.doSign(loginVo, singinVo);
-            try {
-                TimeUnit.MILLISECONDS.sleep(300);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
         });
 
         return SignStatusEnum.SUCCESS.getSymbol();

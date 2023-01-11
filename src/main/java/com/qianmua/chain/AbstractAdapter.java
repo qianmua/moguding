@@ -18,4 +18,5 @@ public interface AbstractAdapter {
      * @param callBack 回调
      */
     void invokeAction(SinginVo singinVo, String token , Consumer<Boolean> callBack);
+
 }

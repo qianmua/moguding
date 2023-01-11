@@ -2,8 +2,8 @@ package com.qianmua.controller;
 
 import com.qianmua.constant.AutoManageType;
 import com.qianmua.dao.LoginMapper;
-import com.qianmua.job.MyCronJob;
-import com.qianmua.job.MyJob;
+import com.qianmua.job.MorningJob;
+import com.qianmua.job.NightJob;
 import com.qianmua.job.SchedulerManager;
 import com.qianmua.pojo.Login;
 import com.qianmua.pojo.vo.LoginVo;
@@ -64,8 +64,8 @@ public class MainController {
             // //每五秒执行一次
             // 这里小心，会和数据库中的一起执行
             // 会额外产生签到和日志
-            myScheduler.startJob("25 01 18 * * ?", AutoManageType.QUARTZ_JOB2, AutoManageType.QUARTZ_GROUP2, MyCronJob.class);
-            myScheduler.startJob("25 51 8 * * ?", AutoManageType.QUARTZ_JOB1, AutoManageType.QUARTZ_GROUP1, MyJob.class);
+            myScheduler.startJob("25 01 18 * * ?", AutoManageType.QUARTZ_JOB2, AutoManageType.QUARTZ_GROUP2, NightJob.class);
+            myScheduler.startJob("25 51 8 * * ?", AutoManageType.QUARTZ_JOB1, AutoManageType.QUARTZ_GROUP1, MorningJob.class);
 
             // TODO 启动后发送邮件消息
 

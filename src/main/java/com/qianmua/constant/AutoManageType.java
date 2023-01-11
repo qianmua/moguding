@@ -27,6 +27,7 @@ public interface AutoManageType {
         }
 
     }
+
     String AUTO__WRITE_DAY = "day";
     String AUTO__WRITE_WEEK = "week";
     String AUTO__WRITE_MONTH = "month";

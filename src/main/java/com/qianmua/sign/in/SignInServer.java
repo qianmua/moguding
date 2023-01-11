@@ -14,7 +14,9 @@ import com.qianmua.pojo.vo.LoginVo;
 import com.qianmua.pojo.vo.SinginVo;
 import com.qianmua.util.DateFormatUtils;
 import com.qianmua.util.JsonUtils;
+import com.qianmua.util.LogUtils;
 import com.qianmua.util.NetworkApi;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +34,7 @@ import java.util.function.Consumer;
  * @description : 执行签到
  */
 @Component
+@Slf4j
 public class SignInServer {
 
     @Autowired
@@ -46,6 +49,7 @@ public class SignInServer {
     @LogNotify(needLog = true)
     @MailNotify
     public synchronized void doSign(LoginVo login, final SinginVo singin) {
+        LogUtils.logEvent(log , "1" , "Login System");
         String loginurl = uri + "/session/user/v1/login";
         NetworkApi.request(JsonUtils.serialize(login),
                 loginurl,

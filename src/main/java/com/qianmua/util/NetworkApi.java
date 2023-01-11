@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-public class NetworkApi {
+public final class NetworkApi {
+
+    private NetworkApi() { }
 
     private static final MediaType mediaType = MediaType.parse("application/json;charset=utf-8");
 

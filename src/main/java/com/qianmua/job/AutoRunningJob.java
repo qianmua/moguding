@@ -7,5 +7,8 @@ package com.qianmua.job;
  * @description :
  */
 public interface AutoRunningJob {
-    public void autoJob();
+    /**
+     * 签到调用接口
+     */
+    void autoJob();
 }

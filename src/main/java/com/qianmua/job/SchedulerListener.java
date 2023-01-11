@@ -1,9 +1,12 @@
 package com.qianmua.job;
 
+import com.qianmua.util.LogUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.JobListener;
 
+@Slf4j
 public class SchedulerListener implements JobListener {
 
 
@@ -21,7 +24,7 @@ public class SchedulerListener implements JobListener {
     @Override
     public void jobToBeExecuted(JobExecutionContext context) {
         String jobName = context.getJobDetail().getKey().toString();
-        System.out.println("Job listen before: " + jobName + " is going to start...");
+        LogUtils.logEvent(log , "Job Before" , jobName + " is going to start...");
 
     }
 
@@ -31,7 +34,7 @@ public class SchedulerListener implements JobListener {
      */
     @Override
     public void jobExecutionVetoed(JobExecutionContext context) {
-        System.out.println("reject job , info :" + context.getJobDetail().toString());
+        LogUtils.logEvent(log , "Reject Job" , context.getJobDetail().toString());
     }
 
     /**
@@ -44,10 +47,10 @@ public class SchedulerListener implements JobListener {
                                JobExecutionException jobException) {
 
         String jobName = context.getJobDetail().getKey().toString();
-        System.out.println("Job after : " + jobName + " is finished...");
+        LogUtils.logEvent(log , "Job After" , jobName + " is finished...");
 
         if (jobException != null && !jobException.getMessage().equals("")) {
-            System.out.println("Exception thrown by: " + jobName
+            LogUtils.logEvent(log , "Job Exception" , jobName
                     + " Exception: " + jobException.getMessage());
         }
     }
