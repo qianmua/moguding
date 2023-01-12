@@ -1,6 +1,6 @@
 package com.qianmua.service;
 
-import com.qianmua.pojo.Login;
+import com.qianmua.entity.Login;
 
 import java.util.List;
 /**

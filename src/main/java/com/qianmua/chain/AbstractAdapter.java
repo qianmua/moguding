@@ -1,6 +1,6 @@
 package com.qianmua.chain;
 
-import com.qianmua.pojo.vo.SinginVo;
+import com.qianmua.entity.vo.SinginVo;
 
 import java.util.function.Consumer;
 

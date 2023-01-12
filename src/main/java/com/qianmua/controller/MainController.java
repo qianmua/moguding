@@ -1,14 +1,14 @@
 package com.qianmua.controller;
 
 import com.qianmua.constant.AutoManageType;
-import com.qianmua.dao.LoginMapper;
-import com.qianmua.job.MorningJob;
-import com.qianmua.job.NightJob;
-import com.qianmua.job.SchedulerManager;
-import com.qianmua.pojo.Login;
-import com.qianmua.pojo.vo.LoginVo;
-import com.qianmua.pojo.vo.SinginVo;
-import com.qianmua.sign.in.HandleSign;
+import com.qianmua.method.LoginMapper;
+import com.qianmua.handle.SignHandle;
+import com.qianmua.framework.job.support.MorningJob;
+import com.qianmua.framework.job.support.NightJob;
+import com.qianmua.framework.job.config.SchedulerManager;
+import com.qianmua.entity.Login;
+import com.qianmua.entity.vo.LoginVo;
+import com.qianmua.entity.vo.SinginVo;
 import com.qianmua.service.UserService;
 import com.qianmua.sign.in.SignInServer;
 import org.quartz.SchedulerException;
@@ -40,17 +40,17 @@ public class MainController {
     private final LoginMapper       loginMapper;
     private final SignInServer      signInServer;
     private final UserService       userservice;
-    private final HandleSign        handleSign;
+    private final SignHandle        signHandle;
 
     public MainController(SchedulerManager myScheduler, LoginMapper loginMapper,
                           SignInServer signInServer, UserService userservice,
-                          HandleSign handleSign) {
+                          SignHandle signHandle) {
 
         this.myScheduler    = myScheduler;
         this.loginMapper    = loginMapper;
         this.signInServer   = signInServer;
         this.userservice    = userservice;
-        this.handleSign     = handleSign;
+        this.signHandle     = signHandle;
     }
 
     private static enum ExecuteStatus{
@@ -119,7 +119,7 @@ public class MainController {
     @ResponseBody
     @RequestMapping("autoSign")
     public String sign() throws InterruptedException {
-        return handleSign.sign();
+        return signHandle.sign();
     }
 
 
@@ -176,7 +176,7 @@ public class MainController {
         LoginVo loginvo = new LoginVo();
         BeanUtils.copyProperties(login,loginvo);
         loginvo.setLoginType(login.getLogintype());
-        return handleSign.getPlan(loginvo);
+        return signHandle.getPlan(loginvo);
     }
 
 }

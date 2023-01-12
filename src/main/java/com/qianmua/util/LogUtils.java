@@ -31,4 +31,10 @@ public class LogUtils {
         }
     }
 
+    public static void logCondition(Logger logger , String stepNumber , Boolean content) {
+        if (logger.isInfoEnabled()) {
+            logger.info(LOG , new Object[]{stepNumber , "Condition" , content});
+        }
+    }
+
 }

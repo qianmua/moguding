@@ -1,21 +1,21 @@
 package com.qianmua.sign.in;
 
 import com.google.common.collect.ImmutableList;
-import com.qianmua.annotation.LogNotify;
-import com.qianmua.annotation.MailNotify;
+import com.qianmua.framework.annotation.LogNotify;
+import com.qianmua.framework.annotation.MailNotify;
 import com.qianmua.constant.AutoManageType;
 import com.qianmua.constant.RandomChickenSoup;
 import com.qianmua.mail.ExecuteSendMailFunction;
 import com.qianmua.mail.MailServer;
-import com.qianmua.pojo.User;
-import com.qianmua.pojo.vo.AutoWriteDayInfo;
-import com.qianmua.pojo.vo.AutoWriteWeekInfo;
-import com.qianmua.pojo.vo.LoginVo;
-import com.qianmua.pojo.vo.SinginVo;
+import com.qianmua.entity.User;
+import com.qianmua.entity.vo.AutoWriteDayInfo;
+import com.qianmua.entity.vo.AutoWriteWeekInfo;
+import com.qianmua.entity.vo.LoginVo;
+import com.qianmua.entity.vo.SinginVo;
 import com.qianmua.util.DateFormatUtils;
 import com.qianmua.util.JsonUtils;
 import com.qianmua.util.LogUtils;
-import com.qianmua.util.NetworkApi;
+import com.qianmua.framework.support.NetworkApi;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +35,7 @@ import java.util.function.Consumer;
  */
 @Component
 @Slf4j
+@Deprecated
 public class SignInServer {
 
     @Autowired
@@ -56,7 +57,7 @@ public class SignInServer {
                 "",
                 json -> {
                     String token = checkToken(json);
-                    checkPlanId(singin );
+                    Objects.requireNonNull(singin.getPlanId());
                     execute(singin, token);
                 });
     }
@@ -192,16 +193,5 @@ public class SignInServer {
         return Optional.ofNullable(parse)
                 .map(var1 -> var1.getData().getToken())
                 .orElseThrow( () -> new RuntimeException("user token with null."));
-    }
-
-    private void checkPlanId(SinginVo singin) {
-        Objects.requireNonNull(singin.getPlanId());
-    }
-
-    /**
-     * 回调空调用，没有实际意义
-     */
-    private void doNothing() {
-        // Do nothing because return back .
     }
 }

@@ -1,7 +1,7 @@
 package com.qianmua.chain;
 
 import com.qianmua.constant.AutoManageType;
-import com.qianmua.pojo.vo.SinginVo;
+import com.qianmua.entity.vo.SinginVo;
 
 /**
  * description : 调用链

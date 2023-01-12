@@ -16,7 +16,11 @@ public interface AutoManageType {
     public enum Type{
         AUTO_DAILY("day") ,
         AUTO_WEEKLY("week") ,
-        AUTO_MONTHLY("month");
+        AUTO_MONTHLY("month"),
+        AUTO_SIGN("sign"),
+        NIL(""),
+
+        ;
 
         private final String symbol;
         Type(String symbol){

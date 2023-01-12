@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.qianmua.dao.LoginMapper">
-    <resultMap id="BaseResultMap" type="com.qianmua.pojo.Login">
+<mapper namespace="com.qianmua.method.LoginMapper">
+    <resultMap id="BaseResultMap" type="com.qianmua.entity.Login">
         <id column="id" jdbcType="VARCHAR" property="id"/>
         <result column="password" jdbcType="VARCHAR" property="password"/>
         <result column="phone" jdbcType="VARCHAR" property="phone"/>
@@ -10,14 +10,14 @@
         <result column="type" jdbcType="BIT" property="type"/>
     </resultMap>
 
-    <resultMap id="SelectAll" type="com.qianmua.pojo.Login">
+    <resultMap id="SelectAll" type="com.qianmua.entity.Login">
         <id column="id" jdbcType="VARCHAR" property="id"/>
         <result column="password" jdbcType="VARCHAR" property="password"/>
         <result column="phone" jdbcType="VARCHAR" property="phone"/>
         <result column="loginType" jdbcType="VARCHAR" property="logintype"/>
         <result column="uuid" jdbcType="VARCHAR" property="uuid"/>
         <result column="type" jdbcType="BIT" property="type"/>
-        <association property="singins" javaType="com.qianmua.pojo.Singin">
+        <association property="singins" javaType="com.qianmua.entity.Singin">
             <id column="id" jdbcType="VARCHAR" property="id"/>
             <result column="country" jdbcType="VARCHAR" property="country"/>
             <result column="address" jdbcType="VARCHAR" property="address"/>
@@ -98,7 +98,7 @@
     <sql id="Base_Column_List">
     id, password, phone, loginType, uuid, type
   </sql>
-    <select id="selectByExample" parameterType="com.qianmua.pojo.LoginExample" resultMap="BaseResultMap">
+    <select id="selectByExample" parameterType="com.qianmua.entity.LoginExample" resultMap="BaseResultMap">
         select
         <if test="distinct">
             distinct
@@ -133,19 +133,19 @@ s.id, s.country, s.address, s.province, s.city, s.latitude, s.description,s. pla
     delete from login
     where id = #{id,jdbcType=VARCHAR}
   </delete>
-    <delete id="deleteByExample" parameterType="com.qianmua.pojo.LoginExample">
+    <delete id="deleteByExample" parameterType="com.qianmua.entity.LoginExample">
         delete from login
         <if test="_parameter != null">
             <include refid="Example_Where_Clause"/>
         </if>
     </delete>
-    <insert id="insert" parameterType="com.qianmua.pojo.Login">
+    <insert id="insert" parameterType="com.qianmua.entity.Login">
     insert into login (id, password, phone, 
       loginType, uuid, type)
     values (#{id,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
       #{logintype,jdbcType=VARCHAR}, #{uuid,jdbcType=VARCHAR}, #{type,jdbcType=BIT})
   </insert>
-    <insert id="insertSelective" parameterType="com.qianmua.pojo.Login">
+    <insert id="insertSelective" parameterType="com.qianmua.entity.Login">
         insert into login
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -188,7 +188,7 @@ s.id, s.country, s.address, s.province, s.city, s.latitude, s.description,s. pla
             </if>
         </trim>
     </insert>
-    <select id="countByExample" parameterType="com.qianmua.pojo.LoginExample" resultType="java.lang.Long">
+    <select id="countByExample" parameterType="com.qianmua.entity.LoginExample" resultType="java.lang.Long">
         select count(*) from login
         <if test="_parameter != null">
             <include refid="Example_Where_Clause"/>
@@ -232,7 +232,7 @@ s.id, s.country, s.address, s.province, s.city, s.latitude, s.description,s. pla
             <include refid="Update_By_Example_Where_Clause"/>
         </if>
     </update>
-    <update id="updateByPrimaryKeySelective" parameterType="com.qianmua.pojo.Login">
+    <update id="updateByPrimaryKeySelective" parameterType="com.qianmua.entity.Login">
         update login
         <set>
             <if test="password != null">
@@ -253,7 +253,7 @@ s.id, s.country, s.address, s.province, s.city, s.latitude, s.description,s. pla
         </set>
         where id = #{id,jdbcType=VARCHAR}
     </update>
-    <update id="updateByPrimaryKey" parameterType="com.qianmua.pojo.Login">
+    <update id="updateByPrimaryKey" parameterType="com.qianmua.entity.Login">
     update login
     set password = #{password,jdbcType=VARCHAR},
       phone = #{phone,jdbcType=VARCHAR},
