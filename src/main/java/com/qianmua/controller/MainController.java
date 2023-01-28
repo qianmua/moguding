@@ -1,6 +1,7 @@
 package com.qianmua.controller;
 
 import com.qianmua.constant.AutoManageType;
+import com.qianmua.constant.SignStatusEnum;
 import com.qianmua.method.LoginMapper;
 import com.qianmua.handle.SignHandle;
 import com.qianmua.framework.job.support.MorningJob;
@@ -33,7 +34,7 @@ import java.util.Objects;
  * @since JDK1.8
  */
 @Controller
-@RequestMapping("/mogu")
+@RequestMapping("/old/mogu")
 public class MainController {
 
     public  final SchedulerManager  myScheduler;
@@ -53,10 +54,7 @@ public class MainController {
         this.signHandle     = signHandle;
     }
 
-    private static enum ExecuteStatus{
-        SUCCESS , FAIL
-    }
-
+    @Deprecated
     @GetMapping(value = "/job/start")
     @ResponseBody
     public String scheduleJob2() {
@@ -76,6 +74,7 @@ public class MainController {
         return "启动定时器失败";
     }
 
+    @Deprecated
     @GetMapping(value = "/job/end")
     @ResponseBody
     public String deleteScheduleJob2() {
@@ -109,17 +108,18 @@ public class MainController {
     public String autoSign(List<String> ids){
         // TODO 批量签到
 
-        return ExecuteStatus.SUCCESS.toString();
+        return SignStatusEnum.SUCCESS.toString();
     }
 
     /**
      * 手动签到接口
      * 签到, 日报 , 周报 , 月报
      */
+    @Deprecated
     @ResponseBody
     @RequestMapping("autoSign")
-    public String sign() throws InterruptedException {
-        return signHandle.sign();
+    public String sign() {
+        return signHandle.signReq();
     }
 
 
@@ -127,6 +127,7 @@ public class MainController {
      * 添加用户
      * @param login 实参
      */
+    @Deprecated
     @RequestMapping("/insert/member")
     @ResponseBody
     public String addMember(@RequestBody Login login) {
@@ -164,7 +165,7 @@ public class MainController {
     @Deprecated
     @RequestMapping("add")
     @ResponseBody
-    public String adduser(@RequestBody Login login) throws InterruptedException {
+    public String adduser(@RequestBody Login login) {
         userservice.addUser(login);
         return "添加成功";
     }
@@ -172,7 +173,7 @@ public class MainController {
     @Deprecated
     @RequestMapping("planid")
     @ResponseBody
-    public  String getPlanId(@RequestBody Login login) throws InterruptedException {
+    public  String getPlanId(@RequestBody Login login) {
         LoginVo loginvo = new LoginVo();
         BeanUtils.copyProperties(login,loginvo);
         loginvo.setLoginType(login.getLogintype());

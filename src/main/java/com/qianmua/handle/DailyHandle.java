@@ -2,9 +2,9 @@ package com.qianmua.handle;
 
 import com.qianmua.chain.InvokeHandler;
 import com.qianmua.constant.AutoManageType;
+import com.qianmua.constant.PublishTypeEnum;
 import com.qianmua.entity.vo.AutoWriteDayInfo;
 import com.qianmua.entity.vo.SinginVo;
-import com.qianmua.util.DateFormatUtils;
 import com.qianmua.util.JsonUtils;
 import com.qianmua.util.LogUtils;
 import com.qianmua.framework.support.NetworkApi;
@@ -26,9 +26,10 @@ public class DailyHandle implements InvokeHandler {
     public static final String SIGN_URL = "";
 
     @Override
-    public void execute(SinginVo singinVo, String token, AutoManageType.Type type) {
+    public void execute(SinginVo singinVo, String token, PublishTypeEnum type) {
+        LogUtils.logEvent(log , "1" , "Daily Execute Trigger.");
         LogUtils.logEvent(log , "singInVO" , singinVo.toString());
-        if (!AutoManageType.Type.AUTO_DAILY.equals(type)) {
+        if (!PublishTypeEnum.AUTO_DAILY.equals(type)) {
             return;
         }
 

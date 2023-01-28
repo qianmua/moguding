@@ -1,5 +1,6 @@
 package com.qianmua.chain;
 
+import com.qianmua.constant.PublishTypeEnum;
 import com.qianmua.entity.vo.SinginVo;
 
 import java.util.function.Consumer;
@@ -17,6 +18,6 @@ public interface AbstractAdapter {
      * @param token token
      * @param callBack 回调
      */
-    void invokeAction(SinginVo singinVo, String token , Consumer<Boolean> callBack);
+    void invokeAction(SinginVo singinVo, String token , PublishTypeEnum type , Consumer<Boolean> callBack);
 
 }

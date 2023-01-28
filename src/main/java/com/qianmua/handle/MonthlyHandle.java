@@ -2,6 +2,7 @@ package com.qianmua.handle;
 
 import com.qianmua.chain.InvokeHandler;
 import com.qianmua.constant.AutoManageType;
+import com.qianmua.constant.PublishTypeEnum;
 import com.qianmua.entity.vo.AutoWriteDayInfo;
 import com.qianmua.entity.vo.SinginVo;
 import com.qianmua.util.DateFormatUtils;
@@ -26,9 +27,10 @@ public class MonthlyHandle implements InvokeHandler {
     private static final String URL = "";
 
     @Override
-    public void execute(SinginVo singinVo, String token, AutoManageType.Type type) {
+    public void execute(SinginVo singinVo, String token, PublishTypeEnum type) {
+        LogUtils.logEvent(log , "1" , "Month Execute Trigger.");
         LogUtils.logEvent(log , "singInVO" , singinVo.toString());
-        if (!AutoManageType.Type.AUTO_MONTHLY.equals(type)) {
+        if (!PublishTypeEnum.AUTO_MONTHLY.equals(type)) {
             return;
         }
 

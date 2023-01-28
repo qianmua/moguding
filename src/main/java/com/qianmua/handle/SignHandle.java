@@ -2,6 +2,7 @@ package com.qianmua.handle;
 
 import com.qianmua.chain.AbstractAdapter;
 import com.qianmua.constant.AutoManageType;
+import com.qianmua.constant.PublishTypeEnum;
 import com.qianmua.constant.SignStatusEnum;
 import com.qianmua.framework.job.support.AutoJob;
 import com.qianmua.entity.Login;
@@ -10,6 +11,7 @@ import com.qianmua.entity.User;
 import com.qianmua.entity.vo.LoginVo;
 import com.qianmua.entity.vo.SinginVo;
 import com.qianmua.service.UserService;
+import com.qianmua.util.DateFormatUtils;
 import com.qianmua.util.JsonUtils;
 import com.qianmua.util.LogUtils;
 import com.qianmua.framework.support.NetworkApi;
@@ -56,14 +58,14 @@ public class SignHandle implements AutoJob {
     @Override
     public void autoJob(){
         LogUtils.logEvent(log , "Trigger Event" , "Sign :" + LocalDateTime.now().toString());
-        this.sign();
+        this.signReq();
     }
 
     /**
      * 签到
      * @return status
      */
-    public String sign() {
+    public String signReq() {
         LogUtils.logEvent(log , "1" , "queryAllUserInfo");
         List<Login> logins = userService.queryAllUserInfo();
 
@@ -84,13 +86,38 @@ public class SignHandle implements AutoJob {
                     "",
                     // call back
                     json -> {
+                        PublishTypeEnum type;
+                        type = getExecuteEnum();
+
                         String token = checkToken(json);
                         Objects.requireNonNull(singinVo.getPlanId());
-                        abstractAdapter.invokeAction(singinVo , token , code -> { } );
+                        abstractAdapter.invokeAction(singinVo , token ,type , code -> { } );
                     });
         });
 
         return SignStatusEnum.SUCCESS.getSymbol();
+    }
+
+    /**
+     * 处理模式类型，
+     * @return
+     */
+    private PublishTypeEnum getExecuteEnum() {
+
+        PublishTypeEnum type = PublishTypeEnum.NIL;
+        if (DateFormatUtils.isDayLast() && !DateFormatUtils.isThisMonthLast()){
+            type = PublishTypeEnum.AUTO_DAILY;
+        }
+
+        if (DateFormatUtils.isDayLast() && DateFormatUtils.isThisMonthLast()){
+            type = PublishTypeEnum.AUTO_MONTHLY;
+        }
+
+        if (DateFormatUtils.isThisWeekSaturday()){
+            type = PublishTypeEnum.AUTO_WEEKLY;
+        }
+
+        return type;
     }
 
     /**

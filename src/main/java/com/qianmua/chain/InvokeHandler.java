@@ -1,6 +1,6 @@
 package com.qianmua.chain;
 
-import com.qianmua.constant.AutoManageType;
+import com.qianmua.constant.PublishTypeEnum;
 import com.qianmua.entity.vo.SinginVo;
 
 /**
@@ -10,5 +10,5 @@ import com.qianmua.entity.vo.SinginVo;
  * @date 2021/1/25  19:07
  */
 public interface InvokeHandler {
-    void execute(SinginVo singinVo , String token , AutoManageType.Type type);
+    void execute(SinginVo singinVo , String token , PublishTypeEnum type);
 }

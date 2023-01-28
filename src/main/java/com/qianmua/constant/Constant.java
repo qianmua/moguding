@@ -15,5 +15,25 @@ package com.qianmua.constant;
  */
 public class Constant {
 
-    public static final String A01 = "";
+    /**
+     * error msg
+     */
+    public static final String CAN_NOT_INSTANCE_CLASS = "Can Not Instance the class";
+
+    public static final String OBJECT_NULL = "Object is Null";
+
+    public static final String OBJECT_NOT_NULL = "Object Can Not Null";
+
+    public static final String OBJECT_ID_NULL = "Object ID Can Not Null";
+
+
+    /**
+     * key
+     */
+    public static final String USER_ID = "USER_ID";
+    public static final String USER = "USER";
+    public static final String USER_NAME = "USER_NAME";
+    public static final String MSG_HEAD = "MSG_HEAD";
+
+
 }

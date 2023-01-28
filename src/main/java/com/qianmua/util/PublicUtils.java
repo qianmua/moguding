@@ -13,7 +13,7 @@ import java.util.UUID;
 public final class PublicUtils {
 
     private PublicUtils() {
-        throw new RuntimeException(Constant.A01);
+        throw new RuntimeException(Constant.CAN_NOT_INSTANCE_CLASS);
     }
 
     /**

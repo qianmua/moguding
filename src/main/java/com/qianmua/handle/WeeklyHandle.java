@@ -2,6 +2,7 @@ package com.qianmua.handle;
 
 import com.qianmua.chain.InvokeHandler;
 import com.qianmua.constant.AutoManageType;
+import com.qianmua.constant.PublishTypeEnum;
 import com.qianmua.entity.vo.AutoWriteWeekInfo;
 import com.qianmua.entity.vo.SinginVo;
 import com.qianmua.util.DateFormatUtils;
@@ -26,9 +27,10 @@ public class WeeklyHandle implements InvokeHandler {
     public static final String URL = "";
 
     @Override
-    public void execute(SinginVo singinVo, String token, AutoManageType.Type type) {
+    public void execute(SinginVo singinVo, String token, PublishTypeEnum type) {
+        LogUtils.logEvent(log , "1" , "Week Execute Trigger.");
         LogUtils.logEvent(log , "SignInVo" , singinVo.toString());
-        if (!AutoManageType.Type.AUTO_WEEKLY.equals(type)) {
+        if (!PublishTypeEnum.AUTO_WEEKLY.equals(type)) {
             return;
         }
 

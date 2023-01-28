@@ -3,6 +3,7 @@ package com.qianmua.chain.impl;
 import com.qianmua.chain.AbstractAdapter;
 import com.qianmua.chain.InvokeHandler;
 import com.qianmua.constant.AutoManageType;
+import com.qianmua.constant.PublishTypeEnum;
 import com.qianmua.entity.vo.SinginVo;
 import com.qianmua.util.DateFormatUtils;
 import com.qianmua.util.LogUtils;
@@ -29,33 +30,34 @@ public class DecisionMakingAdapter implements AbstractAdapter {
     }
 
     @Override
-    public void invokeAction(SinginVo singinVo, String token, Consumer<Boolean> callBack) {
-        // 周报 日报
+    public void invokeAction(SinginVo singinVo, String token,PublishTypeEnum typeEnum , Consumer<Boolean> callBack) {
+        // 周报 日报 轮询
         invokeHandlers.forEach( invokeHandler -> {
             LogUtils.logEvent(log , "Sign" , "Execute Sign");
-            invokeHandler.execute(singinVo , token , AutoManageType.Type.AUTO_SIGN);
+            invokeHandler.execute(singinVo , token , PublishTypeEnum.AUTO_SIGN);
 
-            AutoManageType.Type type;
+            invokeHandler.execute(singinVo , token , typeEnum);
+            /*PublishTypeEnum type;
             LogUtils.logCondition(log , "Day Flag" , DateFormatUtils.isDayLast() && !DateFormatUtils.isThisMonthLast());
             if (DateFormatUtils.isDayLast() && !DateFormatUtils.isThisMonthLast()){
                 LogUtils.logEvent(log , "1" , "Daily Execute Trigger.");
-                type = AutoManageType.Type.AUTO_DAILY;
+                type = PublishTypeEnum.AUTO_DAILY;
                 invokeHandler.execute(singinVo , token , type);
             }
 
             LogUtils.logCondition(log , "Month Flag" , DateFormatUtils.isDayLast() && DateFormatUtils.isThisMonthLast());
             if (DateFormatUtils.isDayLast() && DateFormatUtils.isThisMonthLast()){
                 LogUtils.logEvent(log , "1" , "Month Execute Trigger.");
-                type = AutoManageType.Type.AUTO_MONTHLY;
+                type = PublishTypeEnum.AUTO_MONTHLY;
                 invokeHandler.execute(singinVo , token , type);
             }
 
             LogUtils.logCondition(log , "Week Flag" , DateFormatUtils.isThisWeekSaturday());
             if (DateFormatUtils.isThisWeekSaturday()){
                 LogUtils.logEvent(log , "1" , "Week Execute Trigger.");
-                type = AutoManageType.Type.AUTO_WEEKLY;
+                type = PublishTypeEnum.AUTO_WEEKLY;
                 invokeHandler.execute(singinVo , token , type);
-            }
+            }*/
 
         });
     }

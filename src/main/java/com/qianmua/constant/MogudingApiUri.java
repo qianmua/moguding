@@ -12,7 +12,10 @@ public enum MogudingApiUri {
     LOGIN_URI("/session/user/v1/login"),
     GET_TOKEN_URI("/practice/plan/v1/getPlanByStu"),
     AUTO_WRITE_URI("/practice/paper/v1/save"),
-    AUTO_CLOCK_URI("/attendence/clock/v1/save");
+    AUTO_CLOCK_URI("/attendence/clock/v1/save"),
+
+    NIL(""),
+    ;
 
     private final String symbol;
 

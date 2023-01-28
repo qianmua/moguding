@@ -32,6 +32,13 @@ public class DateFormatUtils {
         return ChronoUnit.DAYS.between(start, end);
     }
 
+    /**
+     * @return current time [String]
+     */
+    public static String getNow(){
+        return LocalDateTime.now().toString().replaceAll("T" , " ");
+    }
+
     public static String getStartDateTime(){
         return LocalDateTime
                 .parse(AutoManageType.BASE_WEEK + " 00:00:01",

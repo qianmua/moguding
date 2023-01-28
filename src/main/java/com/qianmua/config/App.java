@@ -13,4 +13,5 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 @EnableAspectJAutoProxy
 public class App implements WebMvcConfigurer {
+
 }
