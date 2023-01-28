@@ -33,6 +33,7 @@ import java.util.Objects;
  * @date 2023/1/10 17:43
  * @since JDK1.8
  */
+@Deprecated
 @Controller
 @RequestMapping("/old/mogu")
 public class MainController {

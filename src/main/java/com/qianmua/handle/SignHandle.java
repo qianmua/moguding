@@ -2,6 +2,7 @@ package com.qianmua.handle;
 
 import com.qianmua.chain.AbstractAdapter;
 import com.qianmua.constant.AutoManageType;
+import com.qianmua.constant.MogudingApiUri;
 import com.qianmua.constant.PublishTypeEnum;
 import com.qianmua.constant.SignStatusEnum;
 import com.qianmua.framework.job.support.AutoJob;
@@ -73,7 +74,7 @@ public class SignHandle implements AutoJob {
             return SignStatusEnum.FAIL.getSymbol();
         }
 
-        final String loginUrl = uri + "/session/user/v1/login";
+        final String loginUrl = uri + MogudingApiUri.LOGIN_URI;
         LogUtils.logEvent(log , "2" , "doSign");
         logins.forEach(lgs -> {
 
@@ -127,7 +128,7 @@ public class SignHandle implements AutoJob {
     public String getPlan(LoginVo login) {
 
         final String[] plan = new String[1];
-        String loginurl = uri + "/session/user/v1/login";
+        String loginurl = uri +MogudingApiUri.LOGIN_URI;
 
         //String plan
         NetworkApi.request(JsonUtils.serialize(login), loginurl, "", json -> {
@@ -178,7 +179,8 @@ public class SignHandle implements AutoJob {
      */
     private void doGetPlan(String[] plan, String token) {
 
-        String planUrl = uri + "/practice/plan/v1/getPlanByStu";
+        String planUrl = uri + MogudingApiUri.GET_TOKEN_URI;
+
         NetworkApi.request("{\"state\":\"\"}", planUrl, token, json1 -> {
             PlanStu planStu = JsonUtils.parse(json1, PlanStu.class);
             Objects.requireNonNull(planStu);

@@ -24,8 +24,14 @@ public class ScheduleResource {
 
 
 
-    @GetMapping("/start")
+    @GetMapping("/auto/start")
     public JsonWrapper startJob() {
+
+        return JsonWrapper.respSuccess();
+    }
+
+    @GetMapping("/auto/end")
+    public JsonWrapper endJob() {
 
         return JsonWrapper.respSuccess();
     }
