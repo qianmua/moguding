@@ -1,6 +1,5 @@
 package com.qianmua.service.impl;
 
-import com.qianmua.framework.support.Assert;
 import com.qianmua.method.LoginMapper;
 import com.qianmua.method.SinginMapper;
 import com.qianmua.entity.Login;
@@ -21,11 +20,14 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private LoginMapper loginMapper;
+    private final LoginMapper loginMapper;
 
-    @Autowired
-    private SinginMapper singinMapper;
+    private final SinginMapper singinMapper;
+
+    public UserServiceImpl(LoginMapper loginMapper, SinginMapper singinMapper) {
+        this.loginMapper = loginMapper;
+        this.singinMapper = singinMapper;
+    }
 
     @Override
     public List<Login> queryAllUserInfo() {
@@ -54,7 +56,12 @@ public class UserServiceImpl implements UserService {
 
     }
 
-//    private String getPlanFromDb(Login login) {
+    @Override
+    public Login queryByUID(String uid) {
+        return loginMapper.selectByUID(uid);
+    }
+
+    //    private String getPlanFromDb(Login login) {
 //        LoginVo loginvo = new LoginVo();
 //        BeanUtils.copyProperties(login,loginvo);
 //        loginvo.setLoginType(login.getLogintype());

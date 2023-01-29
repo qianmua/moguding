@@ -1,14 +1,16 @@
-package com.qianmua.handle;
+package com.qianmua.chain.handle;
 
 import com.qianmua.chain.InvokeHandler;
 import com.qianmua.constant.AutoManageType;
 import com.qianmua.constant.PublishTypeEnum;
+import com.qianmua.constant.RandomChickenSoup;
 import com.qianmua.entity.vo.AutoWriteDayInfo;
 import com.qianmua.entity.vo.SinginVo;
 import com.qianmua.util.JsonUtils;
 import com.qianmua.util.LogUtils;
 import com.qianmua.framework.support.NetworkApi;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -17,19 +19,20 @@ import java.util.ArrayList;
  * description :
  *
  * @author jinchao.hu
- * @date 2021/1/25  19:35
+ * @date 2021/1/25  19:36
  */
 @Component
 @Slf4j
-public class DailyHandle implements InvokeHandler {
+public class MonthlyHandle implements InvokeHandler {
 
-    public static final String SIGN_URL = "";
+    @Value("${mogu.service.sign-uri}")
+    private String uri;
 
     @Override
     public void execute(SinginVo singinVo, String token, PublishTypeEnum type) {
-        LogUtils.logEvent(log , "1" , "Daily Execute Trigger.");
+        LogUtils.logEvent(log , "1" , "Month Execute Trigger.");
         LogUtils.logEvent(log , "singInVO" , singinVo.toString());
-        if (!PublishTypeEnum.AUTO_DAILY.equals(type)) {
+        if (!PublishTypeEnum.AUTO_MONTHLY.equals(type)) {
             return;
         }
 
@@ -37,7 +40,7 @@ public class DailyHandle implements InvokeHandler {
         AutoWriteDayInfo info = new AutoWriteDayInfo();
         info.setAttachmentList(new ArrayList<>())
                 .setAttachments("")
-                .setContent("") // 鸡汤
+                .setContent(RandomChickenSoup.getRandomChickenSoup()) // 鸡汤
                 .setPlanId(singinVo.getPlanId())
                 .setReportType(type.getSymbol())
                 .setTitle(AutoManageType.AUTO_TITLE);
@@ -46,7 +49,7 @@ public class DailyHandle implements InvokeHandler {
         LogUtils.logEvent(log , "Info" , info.toString());
         NetworkApi.request(
                 JsonUtils.serialize(info),
-                SIGN_URL,
+                uri,
                 token,
                 json1 -> { });
     }

@@ -32,4 +32,6 @@ public interface LoginMapper {
 
     //   查询所有登录信息
     List<Login> selectAll();
+
+    Login selectByUID(@Param("uid") String uid);
 }

@@ -2,10 +2,8 @@ package com.qianmua.chain.impl;
 
 import com.qianmua.chain.AbstractAdapter;
 import com.qianmua.chain.InvokeHandler;
-import com.qianmua.constant.AutoManageType;
 import com.qianmua.constant.PublishTypeEnum;
 import com.qianmua.entity.vo.SinginVo;
-import com.qianmua.util.DateFormatUtils;
 import com.qianmua.util.LogUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -37,28 +35,6 @@ public class DecisionMakingAdapter implements AbstractAdapter {
             invokeHandler.execute(singinVo , token , PublishTypeEnum.AUTO_SIGN);
 
             invokeHandler.execute(singinVo , token , typeEnum);
-            /*PublishTypeEnum type;
-            LogUtils.logCondition(log , "Day Flag" , DateFormatUtils.isDayLast() && !DateFormatUtils.isThisMonthLast());
-            if (DateFormatUtils.isDayLast() && !DateFormatUtils.isThisMonthLast()){
-                LogUtils.logEvent(log , "1" , "Daily Execute Trigger.");
-                type = PublishTypeEnum.AUTO_DAILY;
-                invokeHandler.execute(singinVo , token , type);
-            }
-
-            LogUtils.logCondition(log , "Month Flag" , DateFormatUtils.isDayLast() && DateFormatUtils.isThisMonthLast());
-            if (DateFormatUtils.isDayLast() && DateFormatUtils.isThisMonthLast()){
-                LogUtils.logEvent(log , "1" , "Month Execute Trigger.");
-                type = PublishTypeEnum.AUTO_MONTHLY;
-                invokeHandler.execute(singinVo , token , type);
-            }
-
-            LogUtils.logCondition(log , "Week Flag" , DateFormatUtils.isThisWeekSaturday());
-            if (DateFormatUtils.isThisWeekSaturday()){
-                LogUtils.logEvent(log , "1" , "Week Execute Trigger.");
-                type = PublishTypeEnum.AUTO_WEEKLY;
-                invokeHandler.execute(singinVo , token , type);
-            }*/
-
         });
     }
 }

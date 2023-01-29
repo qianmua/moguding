@@ -22,4 +22,11 @@ public interface UserService {
      * @param login 登录信息
      */
     void addUser(Login login);
+
+    /**
+     * query by uid
+     * @param uid uid
+     * @return Login Info
+     */
+    Login queryByUID(String uid);
 }

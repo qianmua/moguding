@@ -1,10 +1,9 @@
-package com.qianmua.handle;
+package com.qianmua.chain.handle;
 
 import com.qianmua.chain.AbstractAdapter;
 import com.qianmua.constant.AutoManageType;
 import com.qianmua.constant.MogudingApiUri;
 import com.qianmua.constant.PublishTypeEnum;
-import com.qianmua.constant.SignStatusEnum;
 import com.qianmua.framework.job.support.AutoJob;
 import com.qianmua.entity.Login;
 import com.qianmua.entity.PlanStu;
@@ -54,49 +53,44 @@ public class SignHandle implements AutoJob {
     }
 
     /**
-     * 自动执行调用接口
+     * 自动执行调用接口 [SIGN ALL]
      */
     @Override
     public void autoJob(){
         LogUtils.logEvent(log , "Trigger Event" , "Sign :" + LocalDateTime.now().toString());
-        this.signReq();
+        // query all user
+        this.signReq(userService.queryAllUserInfo());
     }
 
     /**
      * 签到
      * @return status
      */
-    public String signReq() {
-        LogUtils.logEvent(log , "1" , "queryAllUserInfo");
-        List<Login> logins = userService.queryAllUserInfo();
-
-        if (logins == null || logins.isEmpty()) {
-            return SignStatusEnum.FAIL.getSymbol();
-        }
+    public void signReq(List<Login> loginList) {
 
         final String loginUrl = uri + MogudingApiUri.LOGIN_URI;
-        LogUtils.logEvent(log , "2" , "doSign");
-        logins.forEach(lgs -> {
+        LogUtils.logEvent(log , "1" , "doSign");
+        loginList.forEach(lgs -> {
 
             LoginVo loginVo = getLoginVo(lgs);
             SinginVo singinVo = getSignVo(lgs, loginVo);
-            // 线程安全
+
             LogUtils.logEvent(log , "call Login API" , loginVo.toString());
             NetworkApi.request(JsonUtils.serialize(loginVo),
                     loginUrl,
                     "",
                     // call back
                     json -> {
+                        // handle publish type
                         PublishTypeEnum type;
                         type = getExecuteEnum();
-
                         String token = checkToken(json);
                         Objects.requireNonNull(singinVo.getPlanId());
+                        LogUtils.logEvent(log , "Type" , type.getSymbol());
+                        LogUtils.logEvent(log , "token" , token);
                         abstractAdapter.invokeAction(singinVo , token ,type , code -> { } );
                     });
         });
-
-        return SignStatusEnum.SUCCESS.getSymbol();
     }
 
     /**

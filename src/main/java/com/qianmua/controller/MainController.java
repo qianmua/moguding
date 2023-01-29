@@ -3,7 +3,7 @@ package com.qianmua.controller;
 import com.qianmua.constant.AutoManageType;
 import com.qianmua.constant.SignStatusEnum;
 import com.qianmua.method.LoginMapper;
-import com.qianmua.handle.SignHandle;
+import com.qianmua.chain.handle.SignHandle;
 import com.qianmua.framework.job.support.MorningJob;
 import com.qianmua.framework.job.support.NightJob;
 import com.qianmua.framework.job.config.SchedulerManager;
@@ -120,7 +120,8 @@ public class MainController {
     @ResponseBody
     @RequestMapping("autoSign")
     public String sign() {
-        return signHandle.signReq();
+        //signHandle.signReq();
+        return "success";
     }
 
 

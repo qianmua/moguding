@@ -122,6 +122,16 @@ s.id, s.country, s.address, s.province, s.city, s.latitude, s.description,s. pla
 
   </select>
 
+    <select id="selectByUID" resultType="com.qianmua.entity.Login">
+        select    l.id, l.password, l.phone, l.loginType, l.uuid, l.type ,
+                  s.id, s.country, s.address, s.province, s.city, s.latitude, s.description,s. plan_id, s.type, s.device, s.longitude, login_id
+        FROM
+            login l
+                LEFT JOIN singin s ON l.id = s.login_id
+        WHERE l.UID = #{uid}
+
+    </select>
+
 
     <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
         select

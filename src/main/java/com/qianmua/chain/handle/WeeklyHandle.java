@@ -1,8 +1,9 @@
-package com.qianmua.handle;
+package com.qianmua.chain.handle;
 
 import com.qianmua.chain.InvokeHandler;
 import com.qianmua.constant.AutoManageType;
 import com.qianmua.constant.PublishTypeEnum;
+import com.qianmua.constant.RandomChickenSoup;
 import com.qianmua.entity.vo.AutoWriteWeekInfo;
 import com.qianmua.entity.vo.SinginVo;
 import com.qianmua.util.DateFormatUtils;
@@ -10,6 +11,7 @@ import com.qianmua.util.JsonUtils;
 import com.qianmua.util.LogUtils;
 import com.qianmua.framework.support.NetworkApi;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -24,7 +26,8 @@ import java.util.ArrayList;
 @Slf4j
 public class WeeklyHandle implements InvokeHandler {
 
-    public static final String URL = "";
+    @Value("${mogu.service.sign-uri}")
+    private String uri;
 
     @Override
     public void execute(SinginVo singinVo, String token, PublishTypeEnum type) {
@@ -43,7 +46,7 @@ public class WeeklyHandle implements InvokeHandler {
 
         weekInfo.setAttachmentList(new ArrayList<>())
                 .setAttachments("")
-                .setContent("")
+                .setContent(RandomChickenSoup.getRandomChickenSoup())
                 .setPlanId(singinVo.getPlanId())
                 .setReportType(AutoManageType.AUTO__WRITE_WEEK)
                 .setTitle(AutoManageType.AUTO_TITLE)
@@ -54,7 +57,7 @@ public class WeeklyHandle implements InvokeHandler {
         LogUtils.logEvent(log , "2" , "Call Api");
         LogUtils.logEvent(log , "weekInfo" , weekInfo.toString());
         NetworkApi.request(JsonUtils.serialize(weekInfo),
-                URL,
+                uri,
                 token,
                 json1 -> { });
     }

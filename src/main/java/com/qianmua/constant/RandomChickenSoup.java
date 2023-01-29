@@ -1,5 +1,7 @@
 package com.qianmua.constant;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 /**
  * @author HJC
  * @version 1.0
@@ -7,9 +9,21 @@ package com.qianmua.constant;
  * @date 2020/12/11  16:59
  * @description :
  */
-public interface RandomChickenSoup {
+public abstract class RandomChickenSoup {
 
-    public static final String[] CHICKEN_SOUP = new String[]{
+    /**
+     * 鸡汤获取
+     * @return string
+     */
+    public static String getRandomChickenSoup(){
+        int length = RandomChickenSoup.CHICKEN_SOUP.length;
+
+        int random = ThreadLocalRandom.current().nextInt(length);
+
+        return RandomChickenSoup.CHICKEN_SOUP[random];
+    }
+
+    private static String[] CHICKEN_SOUP = new String[]{
       "希望是我们行走的灯光，一旦熄灭，天空就会灰暗，年轻就会失去意义，就难以寻找奋斗的方向。路在难走，总无绝路，只要灯光尚存，命运或许改变在下一个转角。捧着希望的灯光，我们能从地狱走向天堂。最难的日子里，相信还有明天，相信今天的炼狱，是为了明天的幸福更长远些。燃起那盏灯光，向前走吧。"
               ,"别人之所以放弃你，那就因为你已经先放弃了自己。相信只要你不放弃自己，没有哪个人会放弃你或者说没有哪个人能放弃你。相信自己是一个人战胜一切的力量之源，不相信自己的人没有成功的理由，因为一脚已跨到失败的坟墓中。"
               ,"不管多远的路，都能走到尽头；不论多深的痛苦，也会有结束的一天。背负明天的希望，在每一个痛并快乐的日子里，才能走得更加坚强；怀揣未来的梦想，在每一个平凡而不平淡的日子里，才会笑得更加灿烂。只要不放弃，就没有什么能让自己退缩；只要够坚强，就没有什么能把自己打垮！"
@@ -46,6 +60,5 @@ public interface RandomChickenSoup {
             ,"人生的路上，谁的生活都不可能一成不变，所以不要笑话别人，说不定有一天被你笑话的人正是能帮到你的人！做人要给自己留条路，那就是后路，谁也不会完美无缺，谁也不敢保证自己一直都是人生得意的。不要把别人的不好当做是你的笑柄！"
             ,"不要让心太累，不要追想太多已经不属于自己的人和事。你我所走过的每一个地方，每一个人，也许都将成为驿站成为过客。一向喜欢追忆，喜欢回顾，喜欢不忘记，如今却发现，深刻在心里的那些东西，早已在他们的时间里化成遗忘。"
             ,"人生的狂热是因为梦想的萌芽而日渐蓬勃人生的**，是因为梦想的延续而茁壮成长。它让我们熔铸着骆驼越漠的坚韧，梦想之灯照亮我们依旧迷茫的方向，没有梦想的人生如同没有星光的夜空让人们不再仰望，没有梦想的人生如同没有曙光的黎明让人们不再追逐。"
-
     };
 }

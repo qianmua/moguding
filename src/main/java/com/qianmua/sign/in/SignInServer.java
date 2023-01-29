@@ -184,8 +184,7 @@ public class SignInServer {
     鸡汤 - -！
      */
     private String getRandomChickenSoup(){
-        return RandomChickenSoup.CHICKEN_SOUP[
-                ThreadLocalRandom.current().nextInt(RandomChickenSoup.CHICKEN_SOUP.length)];
+        return RandomChickenSoup.getRandomChickenSoup();
     }
 
     private String checkToken(String json) {
