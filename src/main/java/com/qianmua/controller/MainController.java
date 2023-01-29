@@ -179,7 +179,7 @@ public class MainController {
         LoginVo loginvo = new LoginVo();
         BeanUtils.copyProperties(login,loginvo);
         loginvo.setLoginType(login.getLogintype());
-        return signHandle.getPlan(loginvo);
+        return "";//signHandle.getPlan(loginvo);
     }
 
 }

@@ -35,6 +35,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * description：
@@ -84,22 +85,51 @@ public class SignHandle implements AutoJob {
         LogUtils.logEvent(log , "1" , "doSign");
         loginList.forEach(lgs -> {
 
-            LoginVo loginVo = getLoginVo(lgs);
-            SinginVo singinVo = getSignVo(lgs, loginVo);
+            LogUtils.logEvent(log , "2" , "Get Plan ID");
+            LoginVo loginVo = buildUserInfo(lgs);
 
+            LogUtils.logEvent(log , "captcha" , "Handle Captcha");
+            LogUtils.logEvent(log , "captcha-1" , "gen UUID");
+            String uuid = UUID.randomUUID().toString();
+            LogUtils.logEvent(log , "captcha-2" , "handle Captcha");
+            String captcha = getValCodeValue(uuid);
+            LogUtils.logEvent(log , "captcha-3" , "Fill user uuid & captcha");
+            loginVo.setCaptcha(captcha);
+            loginVo.setUuid(uuid);
+
+            // TODO 拆分 get plan id & get token & exec
             LogUtils.logEvent(log , "call Login API" , loginVo.toString());
             NetworkApi.request(JsonUtils.serialize(loginVo),
                     loginUrl,
                     "",
-                    // call back
                     json -> {
-                        // handle publish type
+                        LogUtils.logEvent(log , "getExecuteEnum" , "Get Current Execute Enum");
                         PublishTypeEnum type;
                         type = getExecuteEnum();
                         String token = checkToken(json);
-                        Objects.requireNonNull(singinVo.getPlanId());
+
+                        LogUtils.logEvent(log , "3" , "Handle Plan ID");
+                        String planUrl = uri + MogudingApiUri.GET_TOKEN_URI;
+
+                        AtomicReference<String> planIdAtomic = new AtomicReference<>("");
+                        NetworkApi.request("{\"state\":\"\"}", planUrl, token, json1 -> {
+                            PlanStu planStu = JsonUtils.parse(json1, PlanStu.class);
+                            Objects.requireNonNull(planStu);
+                            planIdAtomic.set(planStu.getData().get(0).getPlanId());
+                        });
+
+                        LogUtils.logEvent(log , "4", "build SingInVo");
+                        SinginVo singinVo = new SinginVo();
+                        // re rewrite
+                        if (Objects.nonNull(lgs.getSingins())) {
+                            BeanUtils.copyProperties(lgs.getSingins(), singinVo);
+                        }
+                        singinVo.setPlanId(planIdAtomic.get());
+                        singinVo.setType( Calendar.getInstance().get(Calendar.HOUR_OF_DAY) <= 12 ?
+                                AutoManageType.AUTO_START_MARK : AutoManageType.AUTO_END_MARK);
+
                         LogUtils.logEvent(log , "Type" , type.getSymbol());
-                        LogUtils.logEvent(log , "token" , token);
+                        LogUtils.logEvent(log , "Token" , token);
                         abstractAdapter.invokeAction(singinVo , token ,type , code -> { } );
                     });
         });
@@ -127,36 +157,6 @@ public class SignHandle implements AutoJob {
         return type;
     }
 
-    /**
-     *   得到PlanId
-     * @return plan string
-     */
-    public String getPlan(LoginVo login) {
-
-        final String[] plan = new String[1];
-        String loginurl = uri +MogudingApiUri.LOGIN_URI;
-
-        LogUtils.logEvent(log , "1" , "gen UUID");
-        String uuid = UUID.randomUUID().toString();
-        LogUtils.logEvent(log , "2" , "handle Captcha");
-        String captcha = getValCodeValue(uuid);
-        LogUtils.logEvent(log , "3" , "Fill user uuid & captcha");
-        login.setCaptcha(captcha);
-        login.setUuid(uuid);
-
-        //String plan
-        NetworkApi.request(JsonUtils.serialize(login), loginurl, "", json -> {
-            String token;
-            User parse = JsonUtils.parse(json, User.class);
-            Objects.requireNonNull(parse);
-            token = parse.getData().getToken();
-            this.doGetPlan(plan , token);
-        });
-        return Optional
-                .ofNullable(plan[0])
-                .orElse(null);
-    }
-
     private String checkToken(String json) {
         User parse = JsonUtils.parse(json, User.class);
         return Optional.ofNullable(parse)
@@ -164,54 +164,13 @@ public class SignHandle implements AutoJob {
                 .orElseThrow( () -> new RuntimeException("user token with null."));
     }
 
-    /**
-     * handle START or END
-     * @param login
-     * @param loginVo
-     * @return
-     */
-    @NotNull
-    private SinginVo getSignVo(Login login, LoginVo loginVo) {
-        SinginVo singinVo = new SinginVo();
-        // re rewrite
-        if (Objects.nonNull(login.getSingins())) {
-            BeanUtils.copyProperties(login.getSingins(), singinVo);
-        }
-        // login
-        String plan = getPlan(loginVo);
-        if (plan == null){
-            throw new RuntimeException("null plan id.");
-        }
-        singinVo.setPlanId(plan);
-
-        singinVo.setType( Calendar.getInstance().get(Calendar.HOUR_OF_DAY) <= 12 ?
-                AutoManageType.AUTO_START_MARK : AutoManageType.AUTO_END_MARK);
-        return singinVo;
-    }
 
     @NotNull
-    private LoginVo getLoginVo(Login login) {
+    private LoginVo buildUserInfo(Login login) {
         LoginVo loginVo = new LoginVo();
         BeanUtils.copyProperties(login, loginVo);
         loginVo.setLoginType(login.getLogintype());
         return loginVo;
-    }
-
-    /**
-     * 获取planId 可能返回空
-     * @param token token
-     */
-    private void doGetPlan(String[] plan, String token) {
-
-        String planUrl = uri + MogudingApiUri.GET_TOKEN_URI;
-
-        NetworkApi.request("{\"state\":\"\"}", planUrl, token, json1 -> {
-            PlanStu planStu = JsonUtils.parse(json1, PlanStu.class);
-            Objects.requireNonNull(planStu);
-            String planId = planStu.getData().get(0).getPlanId();
-            plan[0] = planId;
-        });
-
     }
 
     /**
