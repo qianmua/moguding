@@ -16,11 +16,23 @@ import com.qianmua.util.JsonUtils;
 import com.qianmua.util.LogUtils;
 import com.qianmua.framework.support.NetworkApi;
 import lombok.extern.slf4j.Slf4j;
+import net.sourceforge.tess4j.ITesseract;
+import net.sourceforge.tess4j.Tesseract;
+import net.sourceforge.tess4j.TesseractException;
+import net.sourceforge.tess4j.util.LoadLibs;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -124,6 +136,14 @@ public class SignHandle implements AutoJob {
         final String[] plan = new String[1];
         String loginurl = uri +MogudingApiUri.LOGIN_URI;
 
+        LogUtils.logEvent(log , "1" , "gen UUID");
+        String uuid = UUID.randomUUID().toString();
+        LogUtils.logEvent(log , "2" , "handle Captcha");
+        String captcha = getValCodeValue(uuid);
+        LogUtils.logEvent(log , "3" , "Fill user uuid & captcha");
+        login.setCaptcha(captcha);
+        login.setUuid(uuid);
+
         //String plan
         NetworkApi.request(JsonUtils.serialize(login), loginurl, "", json -> {
             String token;
@@ -144,10 +164,20 @@ public class SignHandle implements AutoJob {
                 .orElseThrow( () -> new RuntimeException("user token with null."));
     }
 
+    /**
+     * handle START or END
+     * @param login
+     * @param loginVo
+     * @return
+     */
     @NotNull
     private SinginVo getSignVo(Login login, LoginVo loginVo) {
         SinginVo singinVo = new SinginVo();
-        BeanUtils.copyProperties(login.getSingins(), singinVo);
+        // re rewrite
+        if (Objects.nonNull(login.getSingins())) {
+            BeanUtils.copyProperties(login.getSingins(), singinVo);
+        }
+        // login
         String plan = getPlan(loginVo);
         if (plan == null){
             throw new RuntimeException("null plan id.");
@@ -182,6 +212,32 @@ public class SignHandle implements AutoJob {
             plan[0] = planId;
         });
 
+    }
+
+    /**
+     * 获取验证码的值
+     *
+     * @return
+     * @throws IOException
+     */
+    public static String getValCodeValue(String uuid) {
+        String valCodeUrl = "https://api.moguding.net:9000/session/user/v1/captcha.jpg?uuid=" + uuid;
+        URL url = null;
+        try (InputStream inputStream = url.openStream()){
+            url = new URL(valCodeUrl);
+            BufferedImage bufferedImg = ImageIO.read(new BufferedInputStream(new DataInputStream(inputStream)));
+            // 读取图片数字
+            ITesseract instance = new Tesseract();
+            File tessDataFolder = LoadLibs.extractTessResources("tessdata");
+            instance.setLanguage("eng");// 英文库识别数字比较准确
+            instance.setDatapath(tessDataFolder.getAbsolutePath());
+            return instance.doOCR(bufferedImg).replace("\n", "");
+        } catch (TesseractException | IOException e) {
+            LogUtils.logEvent(log , "Get Captcha Error" , e.getMessage());
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
 

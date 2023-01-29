@@ -104,7 +104,7 @@
             distinct
         </if>
         <include refid="Base_Column_List"/>
-        from login
+        from LOGIN
         <if test="_parameter != null">
             <include refid="Example_Where_Clause"/>
         </if>
@@ -114,20 +114,20 @@
     </select>
 
     <select id="selectAll" resultMap="SelectAll">
-   select    l.id, l.password, l.phone, l.loginType, l.uuid, l.type ,
-s.id, s.country, s.address, s.province, s.city, s.latitude, s.description,s. plan_id, s.type, s.device, s.longitude, login_id
+   select    l.id, l.password, l.phone, l.loginType, l.uuid, l.type , l.uid ,
+             s.id, s.country, s.address, s.province, s.city, s.latitude, s.description,s. plan_id, s.type, s.device, s.longitude, login_id
     FROM
-    login l
-    LEFT JOIN singin s ON l.id = s.login_id
+    LOGIN l
+    LEFT JOIN SINGIN s ON l.id = s.login_id
 
   </select>
 
     <select id="selectByUID" resultType="com.qianmua.entity.Login">
-        select    l.id, l.password, l.phone, l.loginType, l.uuid, l.type ,
+        select    l.id, l.password, l.phone, l.loginType, l.uuid, l.type , l.uid ,
                   s.id, s.country, s.address, s.province, s.city, s.latitude, s.description,s. plan_id, s.type, s.device, s.longitude, login_id
         FROM
-            login l
-                LEFT JOIN singin s ON l.id = s.login_id
+            LOGIN l
+                LEFT JOIN SINGIN s ON l.id = s.login_id
         WHERE l.UID = #{uid}
 
     </select>
@@ -136,27 +136,27 @@ s.id, s.country, s.address, s.province, s.city, s.latitude, s.description,s. pla
     <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from login
+        from LOGIN
         where id = #{id,jdbcType=VARCHAR}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-    delete from login
+    delete from LOGIN
     where id = #{id,jdbcType=VARCHAR}
   </delete>
     <delete id="deleteByExample" parameterType="com.qianmua.entity.LoginExample">
-        delete from login
+        delete from LOGIN
         <if test="_parameter != null">
             <include refid="Example_Where_Clause"/>
         </if>
     </delete>
     <insert id="insert" parameterType="com.qianmua.entity.Login">
-    insert into login (id, password, phone, 
+    insert into LOGIN (id, password, phone,
       loginType, uuid, type)
     values (#{id,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
       #{logintype,jdbcType=VARCHAR}, #{uuid,jdbcType=VARCHAR}, #{type,jdbcType=BIT})
   </insert>
     <insert id="insertSelective" parameterType="com.qianmua.entity.Login">
-        insert into login
+        insert into LOGIN
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
                 id,
@@ -199,13 +199,13 @@ s.id, s.country, s.address, s.province, s.city, s.latitude, s.description,s. pla
         </trim>
     </insert>
     <select id="countByExample" parameterType="com.qianmua.entity.LoginExample" resultType="java.lang.Long">
-        select count(*) from login
+        select count(*) from LOGIN
         <if test="_parameter != null">
             <include refid="Example_Where_Clause"/>
         </if>
     </select>
     <update id="updateByExampleSelective" parameterType="map">
-        update login
+        update LOGIN
         <set>
             <if test="record.id != null">
                 id = #{record.id,jdbcType=VARCHAR},
@@ -231,7 +231,7 @@ s.id, s.country, s.address, s.province, s.city, s.latitude, s.description,s. pla
         </if>
     </update>
     <update id="updateByExample" parameterType="map">
-        update login
+        update LOGIN
         set id = #{record.id,jdbcType=VARCHAR},
         password = #{record.password,jdbcType=VARCHAR},
         phone = #{record.phone,jdbcType=VARCHAR},
@@ -243,7 +243,7 @@ s.id, s.country, s.address, s.province, s.city, s.latitude, s.description,s. pla
         </if>
     </update>
     <update id="updateByPrimaryKeySelective" parameterType="com.qianmua.entity.Login">
-        update login
+        update LOGIN
         <set>
             <if test="password != null">
                 password = #{password,jdbcType=VARCHAR},
@@ -264,7 +264,7 @@ s.id, s.country, s.address, s.province, s.city, s.latitude, s.description,s. pla
         where id = #{id,jdbcType=VARCHAR}
     </update>
     <update id="updateByPrimaryKey" parameterType="com.qianmua.entity.Login">
-    update login
+    update LOGIN
     set password = #{password,jdbcType=VARCHAR},
       phone = #{phone,jdbcType=VARCHAR},
       loginType = #{logintype,jdbcType=VARCHAR},

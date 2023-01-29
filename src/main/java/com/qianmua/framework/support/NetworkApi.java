@@ -42,15 +42,29 @@ public final class NetworkApi {
         Callback callback = new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                LogUtils.logEvent(log , "call back" , e.getMessage());
+                LogUtils.logEvent(log , "call back Error" , e.getMessage());
             }
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                LogUtils.logEvent(log , "call back Resp" , "Done");
                 ResponseBody body = Optional.ofNullable(response.body()).orElse(null);
                 callRequestBack.success(body == null ? null : body.string());
             }
         };
-        sHttpClient.newCall(request).enqueue(callback);
+        // async
+        //sHttpClient.newCall(request).enqueue(callback);
+
+        // sync
+        try {
+            Response response = sHttpClient.newCall(request).execute();
+            ResponseBody body = response.body();
+            callRequestBack.success(body == null ? null : body.string());
+        } catch (IOException e) {
+            LogUtils.logEvent(log, "Error" , e.getMessage());
+            e.printStackTrace();
+        }
+
+
     }
 
 

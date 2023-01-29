@@ -21,19 +21,19 @@ public class LogUtils {
     /**
      * category - step number - content
      */
-    private static final String LOG = "[ {} Log ] - [Step - {}] : []";
+    private static final String LOG = "[ {} Log ] - [Step - {}] : [{}]";
 
     public LogUtils() {}
 
     public static void logEvent(Logger logger , String stepNumber , String content) {
         if (logger.isInfoEnabled()) {
-            logger.info(LOG , new Object[]{stepNumber , "Event" , content});
+            logger.info(LOG , new Object[]{ "Event" ,stepNumber , content});
         }
     }
 
     public static void logCondition(Logger logger , String stepNumber , Boolean content) {
         if (logger.isInfoEnabled()) {
-            logger.info(LOG , new Object[]{stepNumber , "Condition" , content});
+            logger.info(LOG , new Object[]{"Condition" , stepNumber , content});
         }
     }
 

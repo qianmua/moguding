@@ -15,4 +15,8 @@ public class LoginVo {
     private String loginType;
 
     private String uuid;
+
+    private String uid;
+
+    private String captcha;
 }

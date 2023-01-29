@@ -9,10 +9,10 @@ package com.qianmua.constant;
 public enum MogudingApiUri {
 
     BASE_URI("https://api.moguding.net:9000"),
-    LOGIN_URI("/session/user/v1/login"),
-    GET_TOKEN_URI("/practice/plan/v1/getPlanByStu"),
-    AUTO_WRITE_URI("/practice/paper/v1/save"),
-    AUTO_CLOCK_URI("/attendence/clock/v1/save"),
+    LOGIN_URI("/session/user/v3/login"),
+    GET_TOKEN_URI("/practice/plan/v3/getPlanByStu"),
+    AUTO_WRITE_URI("/practice/paper/v3/save"),
+    AUTO_CLOCK_URI("/attendence/clock/v3/save"),
 
     NIL(""),
     ;
