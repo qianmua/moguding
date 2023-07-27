@@ -7,9 +7,9 @@ package com.qianmua.service;
  * change history:
  * date                      defect#    person       comments
  * -------------------------------------------------------------<p>
- * 2023/7/27 15:49          ********    kong.ruo    create file.
+ * 2023/7/27 15:49          ********    ruo kong    create file.
  *
- * @author kong.ruo
+ * @author ruo kong
  * @date 2023/7/27 15:49
  * @since JDK1.8
  */
@@ -23,9 +23,9 @@ public interface ScheduleService {
      * change history:
      * date                         defect#        person       comments
      * -----------------------------------------------------------------<p>
-     * 2023-07-27                    ********       kong.ruo    create file.
+     * 2023-07-27                    ********       ruo kong    create file.
      *
-     * @author kong.ruo
+     * @author ruo kong
      * @date 2023-07-27 16:54
      */
     void startAllRegisterJob(String jobGroup);
@@ -38,9 +38,9 @@ public interface ScheduleService {
      * change history:
      * date                         defect#        person       comments
      * -----------------------------------------------------------------<p>
-     * 2023-07-27                    ********       kong.ruo    create file.
+     * 2023-07-27                    ********       ruo kong    create file.
      *
-     * @author kong.ruo
+     * @author ruo kong
      * @date 2023-07-27 16:02
      */
     void endAllRunTimeJob(String jobGroup);

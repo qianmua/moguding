@@ -15,9 +15,9 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
  * change history:
  * date                      defect#    person       comments
  * -------------------------------------------------------------<p>
- * 2023/7/27 16:27          ********    kong.ruo    create file.
+ * 2023/7/27 16:27          ********    ruo kong    create file.
  *
- * @author kong.ruo
+ * @author ruo kong
  * @date 2023/7/27 16:27
  * @since JDK1.8
  */
@@ -66,9 +66,9 @@ public enum JobModelEnum {
      * change history:
      * date                         defect#        person       comments
      * -----------------------------------------------------------------<p>
-     * 2023-07-27                    ********       kong.ruo    create file.
+     * 2023-07-27                    ********       ruo kong    create file.
      *
-     * @author kong.ruo
+     * @author ruo kong
      * @date 2023-07-27 17:41
      * @param    jobModel jobModel str
      * @param    jobGroup jobGroup str

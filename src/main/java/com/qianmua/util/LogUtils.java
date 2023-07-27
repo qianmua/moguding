@@ -39,9 +39,9 @@ public class LogUtils {
      * change history:
      * date                         defect#        person       comments
      * -----------------------------------------------------------------<p>
-     * 2023-07-27                    ********       kong.ruo    create file.
+     * 2023-07-27                    ********       ruo kong    create file.
      *
-     * @author kong.ruo
+     * @author ruo kong
      * @date 2023-07-27 15:12
      * @param	logger	log factory
      * @param	stepNumber	step
@@ -62,9 +62,9 @@ public class LogUtils {
      * change history:
      * date                         defect#        person       comments
      * -----------------------------------------------------------------<p>
-     * 2023-07-27                    ********       kong.ruo    create file.
+     * 2023-07-27                    ********       ruo kong    create file.
      *
-     * @author kong.ruo
+     * @author ruo kong
      * @date 2023-07-27 15:12
      * @param	logger	log factory
      * @param	stepNumber	step
@@ -85,9 +85,9 @@ public class LogUtils {
      * change history:
      * date                         defect#        person       comments
      * -----------------------------------------------------------------<p>
-     * 2023-07-27                    ********       kong.ruo    create file.
+     * 2023-07-27                    ********       ruo kong    create file.
      *
-     * @author kong.ruo
+     * @author ruo kong
      * @date 2023-07-27 17:47
      * @param	logger
      * @param	stepNumber
@@ -108,9 +108,9 @@ public class LogUtils {
      * change history:
      * date                         defect#        person       comments
      * -----------------------------------------------------------------<p>
-     * 2023-07-27                    ********       kong.ruo    create file.
+     * 2023-07-27                    ********       ruo kong    create file.
      *
-     * @author kong.ruo
+     * @author ruo kong
      * @date 2023-07-27 15:24
      * @param	logger
      * @param	stepNumber
