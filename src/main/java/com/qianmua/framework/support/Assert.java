@@ -1,5 +1,7 @@
 package com.qianmua.framework.support;
 
+import com.qianmua.common.ErrorCode;
+
 /**
  * description：
  * <p>
@@ -15,12 +17,14 @@ package com.qianmua.framework.support;
  */
 public abstract class Assert {
 
-    public static void check() {
-
+    public static void check(ErrorCode errorCode, Object ... args) {
+        check(true , errorCode , args);
     }
 
-    public static void check(boolean expression) {
-
+    public static void check(boolean expression , ErrorCode errorCode , Object ... args) {
+        if (expression) {
+            throw new RuntimeException(String.format(errorCode.getErrorMsg() , args));
+        }
     }
 
 

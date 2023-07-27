@@ -9,17 +9,16 @@ import org.quartz.JobListener;
 @Slf4j
 public class SchedulerListener implements JobListener {
 
-
     public static final String LISTENER_NAME = "QuartSchedulerListener";
 
     @Override
     public String getName() {
-        return LISTENER_NAME; //must return a name
+        return LISTENER_NAME;
     }
 
     /**
      * 调度前
-     * @param context
+     * @param context job context
      */
     @Override
     public void jobToBeExecuted(JobExecutionContext context) {

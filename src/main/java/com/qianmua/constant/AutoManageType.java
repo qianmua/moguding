@@ -25,6 +25,17 @@ public interface AutoManageType {
     String QUARTZ_JOB1 = "job1";
     String QUARTZ_JOB2 = "job2";
 
+    /**
+     * 上午八点定时扫描
+     */
+    String JOB_EIGHT_AM = "Job_Eight.AM";
+
+    /**
+     * 下午六点定时扫描
+     */
+    String JOB_SIX_PM = "Job_Six.PM";
+
+    String JOB_GROUP_SIGN = "SignJobGroup";
     // quartz group
     String QUARTZ_GROUP1 = "group1";
     String QUARTZ_GROUP2 = "group2";

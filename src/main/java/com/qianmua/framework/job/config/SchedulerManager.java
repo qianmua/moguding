@@ -1,15 +1,16 @@
 package com.qianmua.framework.job.config;
 
+import lombok.RequiredArgsConstructor;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class SchedulerManager {
 
-    @Autowired
-    private SchedulerFactoryBean schedulerFactoryBean;
+    private final SchedulerFactoryBean schedulerFactoryBean;
 
     private JobListener scheduleListener;
 
@@ -21,8 +22,7 @@ public class SchedulerManager {
      * @throws SchedulerException e
      */
     public void startJob(String cron, String jobName, String jobGroup,
-                         Class<? extends Job> jobClass)
-            throws SchedulerException {
+                         Class<? extends Job> jobClass) throws SchedulerException {
         Scheduler scheduler = schedulerFactoryBean.getScheduler();
         if (scheduleListener == null) {
             scheduleListener = new SchedulerListener();
@@ -37,8 +37,7 @@ public class SchedulerManager {
     /**
      * 移除定时任务
      */
-    public void deleteJob(String jobName, String jobGroup)
-            throws SchedulerException {
+    public void deleteJob(String jobName, String jobGroup) throws SchedulerException {
         Scheduler scheduler = schedulerFactoryBean.getScheduler();
         JobKey jobKey = new JobKey(jobName, jobGroup);
         scheduler.deleteJob(jobKey);
@@ -47,8 +46,7 @@ public class SchedulerManager {
     /**
      * 暂停定时任务
      */
-    public void pauseJob(String jobName, String jobGroup)
-            throws SchedulerException {
+    public void pauseJob(String jobName, String jobGroup) throws SchedulerException {
         Scheduler scheduler = schedulerFactoryBean.getScheduler();
         JobKey jobKey = new JobKey(jobName, jobGroup);
         scheduler.pauseJob(jobKey);
@@ -57,8 +55,7 @@ public class SchedulerManager {
     /**
      * 恢复定时任务
      */
-    public void resumeJob(String jobName, String jobGroup)
-            throws SchedulerException {
+    public void resumeJob(String jobName, String jobGroup) throws SchedulerException {
         Scheduler scheduler = schedulerFactoryBean.getScheduler();
         JobKey triggerKey = new JobKey(jobName, jobGroup);
         scheduler.resumeJob(triggerKey);
@@ -67,8 +64,7 @@ public class SchedulerManager {
     /**
      * 清空所有当前scheduler对象下的定时任务【目前只有全局一个scheduler对象】
      */
-    public void clearAll()
-            throws SchedulerException {
+    public void clearAll() throws SchedulerException {
         Scheduler scheduler = schedulerFactoryBean.getScheduler();
         scheduler.clear();
     }
@@ -90,8 +86,11 @@ public class SchedulerManager {
         JobDetail jobDetail = JobBuilder.newJob(jobClass).withIdentity(jobName, jobGroup).build();
         // 每5s执行一次
         CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(cron);
-        CronTrigger cronTrigger = TriggerBuilder.newTrigger().withIdentity(jobName,
-                jobGroup).withSchedule(scheduleBuilder).build();
+
+        CronTrigger cronTrigger = TriggerBuilder.newTrigger()
+                .withIdentity(jobName, jobGroup)
+                .withSchedule(scheduleBuilder)
+                .build();
 
         scheduler.scheduleJob(jobDetail, cronTrigger);
     }

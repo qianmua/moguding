@@ -6,6 +6,7 @@ import com.qianmua.entity.Login;
 import com.qianmua.entity.Singin;
 import com.qianmua.service.UserService;
 import com.qianmua.util.PublicUtils;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,16 +19,11 @@ import java.util.List;
  * @description :
  */
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final LoginMapper loginMapper;
-
     private final SinginMapper singinMapper;
-
-    public UserServiceImpl(LoginMapper loginMapper, SinginMapper singinMapper) {
-        this.loginMapper = loginMapper;
-        this.singinMapper = singinMapper;
-    }
 
     @Override
     public List<Login> queryAllUserInfo() {
@@ -60,14 +56,6 @@ public class UserServiceImpl implements UserService {
     public Login queryByUID(String uid) {
         return loginMapper.selectByUID(uid);
     }
-
-    //    private String getPlanFromDb(Login login) {
-//        LoginVo loginvo = new LoginVo();
-//        BeanUtils.copyProperties(login,loginvo);
-//        loginvo.setLoginType(login.getLogintype());
-//        String plan = handleSign.getPlan(loginvo);
-//        return plan;
-//    }
 
 
 }

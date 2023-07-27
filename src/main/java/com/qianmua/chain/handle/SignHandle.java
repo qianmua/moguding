@@ -136,7 +136,8 @@ public class SignHandle implements AutoJob {
     }
 
     /**
-     * 处理模式类型，
+     * 处理模式类型
+     * 如果是 day & week , day & week , week & month ,week & month , day & week & month
      * @return
      */
     private PublishTypeEnum getExecuteEnum() {
