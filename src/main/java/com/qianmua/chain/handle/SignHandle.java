@@ -104,8 +104,7 @@ public class SignHandle implements AutoJob {
                     "",
                     json -> {
                         LogUtils.logEvent(log , "getExecuteEnum" , "Get Current Execute Enum");
-                        PublishTypeEnum type;
-                        type = getExecuteEnum();
+                        PublishTypeEnum type = getExecuteEnum();
                         String token = checkToken(json);
 
                         LogUtils.logEvent(log , "3" , "Handle Plan ID");

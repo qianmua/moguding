@@ -11,6 +11,7 @@ import com.qianmua.service.UserService;
 import com.qianmua.util.LogUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.util.Lists;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -52,11 +53,8 @@ public class SignServiceImpl implements SignService {
         Assert.check(StrUtil.isEmpty(uid) , BaseErrorCodeEnum.SYSTEM_ERROR , " uid Empty");
         LogUtils.logEvent(log , "Query User By UID" , uid);
         Login login = userService.queryByUID(uid);
-        LogUtils.logEvent(log , "signReq" , "sign Request");
 
-        signHandle.signReq(
-                new ArrayList<Login>() {{
-                    add(login);
-                }});
+        LogUtils.logEvent(log , "signReq By User ID" , uid);
+        signHandle.signReq(Lists.newArrayList(login));
     }
 }

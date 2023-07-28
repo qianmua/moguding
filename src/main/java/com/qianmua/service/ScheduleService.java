@@ -1,5 +1,7 @@
 package com.qianmua.service;
 
+import com.qianmua.entity.input.CreateJobIn;
+
 /**
  * description：
  * <p>
@@ -44,5 +46,22 @@ public interface ScheduleService {
      * @date 2023-07-27 16:02
      */
     void endAllRunTimeJob(String jobGroup);
+
+    /**
+     * description：
+     * <p>
+     *     创建新的Job Trigger
+     * </p>
+     * change history:
+     * date                         defect#        person       comments
+     * -----------------------------------------------------------------<p>
+     * 2023-07-28                    ********       kong.ruo    create file.
+     *
+     * @author ruo kong
+     * @date 2023-07-28 10:14
+     * @param	createJobIn	jobInParams
+     * @since JDK1.8
+     */
+    void createJob(CreateJobIn createJobIn);
 
 }

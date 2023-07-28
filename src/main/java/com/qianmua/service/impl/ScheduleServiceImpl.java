@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.google.common.collect.Lists;
 import com.qianmua.common.errorcode.BaseErrorCodeEnum;
 import com.qianmua.constant.AutoManageType;
+import com.qianmua.entity.input.CreateJobIn;
 import com.qianmua.framework.job.config.JobModelEnum;
 import com.qianmua.framework.job.config.SchedulerManager;
 import com.qianmua.framework.support.Assert;
@@ -77,6 +78,11 @@ public class ScheduleServiceImpl implements ScheduleService {
                         e.printStackTrace();
                     }
                 }));
+    }
+
+    @Override
+    public void createJob(CreateJobIn createJobIn) {
+
     }
 
     private List<String> getJobByGroup(String jobGroupSign) {
